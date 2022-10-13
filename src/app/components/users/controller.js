@@ -1,31 +1,40 @@
-
 const userService = require('./service');
 const bcrypt = require('bcryptjs');
 
 exports.login = async (email, password) => {
     const user = await userService.login(email);
-    console.log(user, email, password);
+    if (!user) {
+        return 1;
+    }
     const checkPassword = await bcrypt.compare(password, user.password);
     if (!checkPassword)
-        return null;
-    return { _id: user._id, email: user.email, role: user.role };
+        return 2;
+    return {
+        _id: user._id,
+        email: user.email,
+        role: user.role
+    };
 }
 
-exports.register = async (full_name, email, password, confirm_password, phone_number, role) => {
-    if (password != confirm_password) 
-        return 1;
+exports.register = async (full_name, email, password, confirm_password, phone_number) => {
     let user = await userService.login(email);
-    if (user) 
+    if (user)
+        return 1;
+    if (password < 8) {
         return 2;
+    }
+    if (password != confirm_password)
+        return 3;
     const users = await userService.getAll();
     const findPhone = users.find(user => user.phone_number === phone_number);
-    if(findPhone) {
-        return 3;
+    if (findPhone) {
+        return 4;
     }
     const hash = await bcrypt.hash(password, await bcrypt.genSalt(10));
-    user = await userService.register(full_name, email, hash, phone_number, role);
-    
-    return 0;
+    user = await userService.register(full_name, email, hash, phone_number);
+    return {
+        _id: user._id
+    };
 }
 
 exports.getAll = async () => {

@@ -6,6 +6,7 @@
   "scripts": {
     "beautiful": "lint-staged",
     "start": "nodemon --inspect src/app.js",
+    "watch": "node-sass --watch src/resources/scss/ --output src/public/css/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,15 +21,21 @@
   "homepage": "https://github.com/Graduation-Fpoly-1507/Server#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "express": "^4.18.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
     "express-generator": "^4.16.1",
     "express-handlebars": "^6.0.6",
     "express-session": "^1.17.3",
+    "file-url": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
-    "mongoose": "^6.6.2",
+    "mongodb": "^4.10.0",
+    "mongoose": "^6.6.5",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.20"
+    "multer": "^1.4.4",
+    "multer-gridfs-storage": "^5.0.2",
+    "nodemon": "^2.0.20",
+    "uuid": "^9.0.0"
   },
   "lint-staged": {
     "src/**/*.{js,json,scss}": "prettier --single-quote --trailing-comma all --tab-width 4 --write"
@@ -42,6 +49,7 @@
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "mongoose-delete": "^0.5.4",
+    "node-sass": "^7.0.3",
     "prettier": "^2.7.1"
   }
 }
