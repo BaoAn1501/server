@@ -1,38 +1,68 @@
-const categoryService = require('./service');
+const sizeService = require('./service');
 
 exports.getAll = async () => {
-    let data = await categoryService.getAll();
+    let data = await sizeService.getAll();
     data = data.map(item => {
         item = {
             _id: item._id,
-            name: item.name,
-            image: item.image,
+            symbol: item.symbol,
+            value: item.value,
+            slug: item.slug,
         }
         return item;
     });
     return data;
 }
 
-exports.getById = async (id) => {
-    // const product = data.filter(item => item._id == id)[0];
-    // return product;
-    let category = await categoryService.getById(id);
-    category = {
-        _id: category._id,
-        name: category.name,
-        image: category.image,
+exports.getBySlug = async (slug) => {
+    let size = await sizeService.getBySlug(slug);
+    size = {
+        _id: size._id,
+        symbol: size.symbol,
+        value: size.value,
+        slug: size.slug,
     }
-    return category;
+    return size;
+}
+
+exports.getById = async (id) => {
+    let size = await sizeService.getById(id);
+    size = {
+        _id: size._id,
+        symbol: size.symbol,
+        value: size.value,
+        slug: size.slug,
+    }
+    return size;
 }
 
 exports.insert = async (body) => {
-    return await categoryService.insert(body);
+    const data = await sizeService.getAll();
+    const isExisted = data.some((size) => {
+        return size.symbol == body.symbol || size.value == body.value;
+    });
+    console.log(isExisted);
+    if (isExisted) {
+        return null;
+    }
+    return await sizeService.insert(body);
 }
 
 exports.delete = async (id) => {
-    return await categoryService.delete(id);
+    return await sizeService.delete(id);
 }
 
-exports.update = async (id, category) => {
-    return await categoryService.update(id, category);
+exports.update = async (id, size) => {
+    const data = await sizeService.getAll();
+    const isExisted = data.some(siz => {
+        return siz._id != id && (siz.symbol == size.symbol || siz.value == size.value);
+    })
+    if (isExisted) {
+        return null;
+    }
+    return await sizeService.update(id, size);
+}
+
+getId = async (slug) => {
+
 }

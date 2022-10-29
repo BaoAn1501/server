@@ -1,0 +1,15 @@
+<div class="mt-4">
+    <h2>Cập nhật Size</h2>
+    <form method="POST" action="/sizes/{{size._id}}/edit">
+        <div class="form-group">
+            <label>Tên size</label>
+            <input name="symbol" value="{{size.symbol}}" type="text" class="form-control" id="name" placeholder="Enter symbol">
+        </div>
+        <div class="form-group">
+            <label>Giá trị</label>
+            <input name="value" value="{{size.value}}" type="text" class="form-control" id="description" placeholder="Enter value">
+        </div>
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+    </form>
+</div>
+

@@ -1,0 +1,93 @@
+<form class="mt-4" name="container-form" method="GET" action="/size/handle-form-action">
+    <div>
+      <h3>Quản lý Size</h3>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="location.href='/sizes/create'">Thêm Size</button>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+            <th scope="col">STT</th>
+            <th scope="col">
+              Size
+              {{!-- {{{sortable 'name' _sort}}} --}}
+              </th>
+            <th scope="col">
+              Value
+              {{!-- {{{sortable 'level' _sort}}} --}}
+              </th>
+            <th scope="col">
+              Actions
+              {{!-- {{{sortable 'createdAt' _sort}}} --}}
+              </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each sizes}}
+            <tr>
+            <th scope="row">{{sum @index 1}}</th>
+            <td>{{this.symbol}}</td>
+            <td>{{this.value}}</td>
+            <td>
+              <div class="dropdown">
+                <a class="btn btn-link dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Tùy chọn
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu">
+                  <a href="/sizes/{{this._id}}/edit" class="btn btn-link dropdown-item">Sửa</a>
+                  <a href="" class="btn btn-link dropdown-item" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-size-modal">Xoá</a>
+                </div>
+              </div>
+            </td>
+            </tr>
+            {{else}}
+            <tr>
+              <td colspan="6">
+                Bạn chưa có size nào trong danh sách
+                <a href="/sizes/create">Tạo Size</a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</form>
+
+{{!-- Confirm delete modal --}}
+<div id="delete-size-modal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xoá size</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Size sau khi xóa sẽ không thể hoàn tác. Bạn có muốn tiếp tục xóa không ?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-delete-size" type="button" class="btn btn-danger">Xoá</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <form name="delete-size-form" method="POST"></form>
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    var sizeId;
+    $('#delete-size-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        sizeId = button.data('id') // Extract info from data-* attributes
+        var formDelete = document.forms['delete-size-form'];
+        var btnDelete = document.getElementById('btn-delete-size');
+        console.log(formDelete, 'form del');
+        console.log(btnDelete, 'btn del');
+        btnDelete.onclick = function(){
+          console.log('btn del clicked');
+          formDelete.action = '/sizes/' + sizeId + '/delete?_method=DELETE';
+          formDelete.submit();
+        }
+    });
+    
+  });
+</script>

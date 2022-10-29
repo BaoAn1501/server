@@ -1,0 +1,83 @@
+<div class="mt-4">
+    <h2>Cập nhật sản phẩm</h2>
+    <form role="form" method="POST" action="/products/{{product._id}}/edit" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Tên sản phẩm</label>
+            <input name="name" value="{{product.name}}" type="text" class="form-control" id="name" placeholder="Enter name">
+        </div>
+        <div class="form-group">
+            <label>Mô tả</label>
+            <textarea name="description" rows="3" class="form-control" id="description" placeholder="Enter description">{{product.description}}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Hình ảnh</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label>Ảnh 1</label>
+                    <input onchange="onChangeFile(1);" type="file" id="image-file1" name="image1" >
+                    <img class="product-image" src="{{product.image1}}" style="object-fit: cover;" id="image-view1" width="200" height="200" />
+                </div>
+                <div class="col-sm-4">
+                    <label>Ảnh 2</label>
+                    <input onchange="onChangeFile(2);" type="file" id="image-file2" name="image2" >
+                    <img class="product-image" src="{{product.image2}}" style="object-fit: cover;" id="image-view2" width="200" height="200" />
+                </div>
+                <div class="col-sm-4">
+                    <label>Ảnh 3</label>
+                    <input onchange="onChangeFile(3);" type="file" id="image-file3" name="image3" >
+                    <img class="product-image" src="{{product.image3}}" style="object-fit: cover;" id="image-view3" width="200" height="200" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Chọn loại</label>
+            <select class="form-control" name="category_id" data-name="{{product.category}}">
+            {{#each categories}}
+                <option value="{{this._id}}">{{this.name}}</option>
+            {{/each}}
+        </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+    </form>
+</div>
+<script>
+    var category = $('select[name="category_id"]').data('name');
+    console.log('name: ', category);
+    $(document).ready(function(){
+        //$(`select option[value="${productId}"]`).attr("selected","selected");
+        $('select').find('option').each( function() {
+            var $this = $(this);
+            console.log('option: ', $this);
+            console.log('option value: ', $this.text());
+            if ($this.text() == category) {
+                console.log('value: ', $this.text());
+                $this.attr('selected','selected');
+                return false;
+            }
+        });
+        $('.product-image').each(function(){
+            console.log('img: ', $(this));
+            console.log('img len: ', String($(this).attr('src')).length);
+            console.log('style: ', $(this).attr('style'))
+            if(String($(this).attr('src')).length == 0){
+                $(this).removeAttr('style');
+                $(this).attr('style', 'display: none;');
+            } else {
+                $(this).removeAttr('style');
+                $(this).attr('style', 'object-fit: cover;');
+            }
+        })
+    })
+    const onChangeFile = (number) => {
+        const file = document.getElementById(`image-file${number}`).files[0];
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById(`image-view${number}`).src = e.target.result;
+            document.getElementById(`image-view${number}`).style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    }
+
+</script>
+
+

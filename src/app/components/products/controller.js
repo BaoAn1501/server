@@ -6,11 +6,13 @@ exports.getAll = async () => {
         item = {
             _id: item._id,
             name: item.name,
-            images: [item.images],
-            status: item.status,
-            rating: item.rating,
             description: item.description,
-            category: item.category_id.name
+            image1: item.image1,
+            image2: item.image2,
+            image3: item.image3,
+            status: item.status.name,
+            rating: item.rating,
+            category_id: item.category_id
         }
         return item;
     });
@@ -18,13 +20,13 @@ exports.getAll = async () => {
 }
 
 exports.getById = async (id) => {
-    // const product = data.filter(item => item._id == id)[0];
-    // return product;
     let product = await productService.getById(id);
     product = {
         _id: product._id,
         name: product.name,
-        images: [product.images],
+        image1: product.image1,
+        image2: product.image2,
+        image3: product.image3,
         status: product.status,
         rating: product.rating,
         description: product.description,
@@ -34,6 +36,13 @@ exports.getById = async (id) => {
 }
 
 exports.insert = async (body) => {
+    const data = await productService.getAll();
+    const isExisted = data.some(product => {
+        return product.name == body.name;
+    })
+    if (isExisted) {
+        return null;
+    }
     return await productService.insert(body);
 }
 
@@ -41,6 +50,13 @@ exports.delete = async (id) => {
     return await productService.delete(id);
 }
 
-exports.update = async (id, category) => {
-    return await productService.update(id, category);
+exports.update = async (id, product) => {
+    const data = await productService.getAll();
+    const isExisted = data.some(p => {
+        return p._id != id && p.name == product.name;
+    })
+    if (isExisted) {
+        return null;
+    }
+    return await productService.update(id, product);
 }

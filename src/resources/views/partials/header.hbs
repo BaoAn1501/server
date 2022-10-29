@@ -1,1 +1,25 @@
-<h2>header</h2>
+<div id="header">
+    <a href="/"><img src="http://localhost:3000/img/website/coffee_icon.webp" alt="Image"></a>
+    <ul>
+        <li class="link-header">
+            <a href="/">Home</a>
+        </li>
+        <li class="link-header">
+            <a href="#">Locations</a>
+        </li>
+        <li class="link-header">
+            <a href="#">About Us</a>
+        </li>
+        <li class="link-header">
+            <a href="/login/admin">Login</a>
+        </li>
+    </ul>
+</div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+    
+    $('li').on('click', function(){
+        $(this).addClass('current');
+        $(this).siblings('.current').removeClass('current');
+    });
+</script>

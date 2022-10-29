@@ -1,6 +1,7 @@
 const categoryService = require('./service');
 
 exports.getAll = async () => {
+    console.log('lay tat ca loai / controller');
     let data = await categoryService.getAll();
     data = data.map(item => {
         item = {
@@ -15,8 +16,6 @@ exports.getAll = async () => {
 }
 
 exports.getById = async (id) => {
-    // const product = data.filter(item => item._id == id)[0];
-    // return product;
     let category = await categoryService.getById(id);
     category = {
         _id: category._id,
@@ -24,7 +23,6 @@ exports.getById = async (id) => {
         description: category.description,
         image: category.image,
     }
-    console.log('getid in controller');
     return category;
 }
 
@@ -40,7 +38,6 @@ exports.insert = async (body) => {
 }
 
 exports.delete = async (id) => {
-    console.log('delete in controller');
     return await categoryService.delete(id);
 }
 
@@ -49,7 +46,6 @@ exports.update = async (id, category) => {
     const isExisted = data.some(cat => {
         return cat._id != id && cat.name == category.name;
     })
-    console.log('update controller isExisted:', isExisted);
     if (isExisted) {
         return null;
     }

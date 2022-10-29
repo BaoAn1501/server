@@ -3,7 +3,7 @@ const userModel = require('./model');
 exports.login = async (email) => {
     const user = await userModel.findOne({
         email: email
-    }, 'email password role');
+    }, 'email password');
     return user;
 }
 
@@ -18,6 +18,6 @@ exports.register = async (full_name, email, password, phone_number) => {
 }
 
 exports.getAll = async () => {
-    const users = userModel.find();
+    const users = userModel.find().sort({ full_name: 1});
     return users;
 }

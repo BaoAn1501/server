@@ -1,38 +1,66 @@
-const categoryService = require('./service');
+const productSizeService = require('./service');
 
-exports.getAll = async () => {
-    let data = await categoryService.getAll();
+exports.getAll = async (id) => {
+    let data = await productSizeService.getAll(id);
     data = data.map(item => {
         item = {
             _id: item._id,
-            name: item.name,
-            image: item.image,
+            name: item.product_id.name,
+            image1: item.product_id.image1,
+            image2: item.product_id.image2,
+            image3: item.product_id.image3,
+            status: item.product_id.status,
+            rating: item.product_id.rating,
+            size_symbol: item.size_id.symbol,
+            size: item.size_id.value,
+            price: item.price
         }
         return item;
     });
     return data;
 }
 
-exports.getById = async (id) => {
-    // const product = data.filter(item => item._id == id)[0];
-    // return product;
-    let category = await categoryService.getById(id);
-    category = {
-        _id: category._id,
-        name: category.name,
-        image: category.image,
+// exports.getAllTrue = async (id) => {
+//     let data = await productSizeService.getAll(id);
+//     data = data.filter(item => {
+//         item = {
+//             _id: item._id,
+//             name: item.product_id.name,
+//             image1: item.product_id.image1,
+//             image2: item.product_id.image2,
+//             image3: item.product_id.image3,
+//             status: item.product_id.status,
+//             rating: item.product_id.rating,
+//             size_symbol: item.size_id.symbol,
+//             size: item.size_id.value,
+//             price: item.price
+//         }
+//         return item;
+//     });
+//     return data;
+// }
+
+exports.getOne = async (id, size) => {
+    let item = await productSizeService.getOne(id, size);
+    item = {
+        _id: item._id,
+        name: item.product_id.name,
+        image1: item.product_id.image1,
+        image2: item.product_id.image2,
+        image3: item.product_id.image3,
+        status: item.product_id.status,
+        rating: item.product_id.rating,
+        size_symbol: item.size_id.symbol,
+        size: item.size_id.value,
+        price: item.price
     }
-    return category;
+    return item;
 }
 
 exports.insert = async (body) => {
-    return await categoryService.insert(body);
+    return await productSizeService.insert(body);
 }
 
-exports.delete = async (id) => {
-    return await categoryService.delete(id);
-}
-
-exports.update = async (id, category) => {
-    return await categoryService.update(id, category);
+exports.update = async (id, size, price) => {
+    return await productSizeService.update(id, size, price);
 }

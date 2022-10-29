@@ -1,0 +1,71 @@
+<div class="mt-4">
+    <h2>Cập nhật giá tiền</h2>
+    <form method="post" action="/products/{{id}}/size">
+        <div class="form-group">
+            <label>Sản phẩm</label>
+            <input value="{{name}}" readonly type="text" class="form-control" id="name" placeholder="Enter name">
+        </div>
+            {{#each productSizes}}
+            <div class="size-{{this.size_symbol}}">
+                <div class="card">
+                    <div class="card-header" id="heading{{this.size_symbol}}">
+                        <h5 class="mb-0">
+                            <input type="button" style="width: 50px;" name="symbol" value="{{this.size_symbol}}" class="size btn-link size-{{this.size_symbol}}" data-toggle="collapse" data-target="#collapse{{this.size_symbol}}" aria-expanded="true" aria-controls="collapse{{this.size_symbol}}">
+                                
+                            </input>
+                        </h5>
+                    </div>
+                    <div id="collapse{{this.size_symbol}}" class="collapse" aria-labelledby="heading{{this.size_symbol}}">
+                        <div class="card-body">
+                            <label>Giá tiền</label>
+                            <input name="price" value="{{this.price}}" type="text" class="form-control" id="price-size-{{this.size_symbol}}" placeholder="Enter price">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        <button id="submit" type="submit" class="btn btn-primary mt-4">Cập nhật</button>
+    </form>
+</div>
+
+{{!-- <script>
+    var data = [];
+    $('#submit').on('click', function(){
+        $('.size').each(function(){
+            var price = $(this).closest('.card')[0].querySelector('input[name="price"]');
+            if($(this).is(':checked') && Number(price.value)>0){
+                console.log('price: ', price);
+                console.log('price value: ', price.value);
+                data.push({ slug: $(this).attr('name'), price: Number(price.value)});
+            }
+        });
+        console.log('data: ', data);
+        var url = window.location.href + '/insert';
+        console.log('url: ', url);
+        fetchAPI(url, data);
+    });
+    function fetchAPI(url, data) {
+        fetch(url, {
+            method: 'POST', // or 'PUT'
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then((response) => {
+            if(response.redirected){
+                window.location.href = 'http://localhost:3000/products'
+            }
+        })
+        .then((data) => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+</script> --}}
+
+            
+
+        

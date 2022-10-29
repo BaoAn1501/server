@@ -6,17 +6,43 @@ app.use(methodOverride('_method'));
 const db = require('./config/db');
 const path = require('path');
 const morgan = require('morgan');
-app.use(morgan('combined'));
+const bodyParser = require('body-parser')
 
+app.use(morgan('combined'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 const {
   engine
 } = require('express-handlebars');
 app.engine('hbs', engine({
-  extname: '.hbs'
+  extname: '.hbs',
+  helpers: {
+    sum: (a, b) => a + b,
+    sortable: (field, sort) => {
+      const sortType = field === sort.column ? sort.type : 'default';
+      const icons = {
+        default: 'swap-vertical-outline',
+        asc: 'chevron-up-outline',
+        desc: 'chevron-down-outline'
+      };
+      const types = {
+        default: 'desc',
+        asc: 'desc',
+        desc: 'asc'
+      }
+
+      const icon = icons[sortType];
+      const type = types[sortType];
+
+      return `<a href="?_sort&column=${field}&type=${type}">
+        <ion-icon name="${icon}" style="color: blue; margin-left: 10px"></ion-icon>
+      </a>`
+    }
+  }
 }));
 app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'resources','views'));
+app.set('views', path.join(__dirname, 'resources', 'views'));
 
 
 

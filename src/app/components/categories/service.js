@@ -1,12 +1,13 @@
 const categoryModel = require('./model')
 
 exports.getAll = async () => {
-    return await categoryModel.find();
+    const p = await categoryModel.find();
+    console.log('lay tat ca loai / service', p);
+    return p;
 }
 
 exports.getById = async (id) => {
     const category = await categoryModel.findById(id);
-    console.log('get id in service');
     return category;
 }
 

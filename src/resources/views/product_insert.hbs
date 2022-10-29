@@ -1,0 +1,55 @@
+<div class="mt-4">
+    <h2>Thêm sản phẩm</h2>
+    <form role="form" method="POST" action="/products/create" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Tên sản phẩm</label>
+            <input name="name" type="text" class="form-control" id="name" placeholder="Enter name">
+        </div>
+        <div class="form-group">
+            <label>Mô tả</label>
+            <textarea name="description" rows="3" class="form-control" id="description" placeholder="Enter description"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Hình ảnh</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label>Ảnh 1</label>
+                    <input onchange="onChangeFile(1);" type="file" id="image-file1" name="image1" >
+                    <img style="display: none;" src="" id="image-view1" width="200" height="200" />
+                </div>
+                <div class="col-sm-4">
+                    <label>Ảnh 2</label>
+                    <input onchange="onChangeFile(2);" type="file" id="image-file2" name="image2" >
+                    <img style="display: none;" src="" id="image-view2" width="200" height="200" />
+                </div>
+                <div class="col-sm-4">
+                    <label>Ảnh 3</label>
+                    <input onchange="onChangeFile(3);" type="file" id="image-file3" name="image3" >
+                    <img style="display: none;" src="" id="image-view3" width="200" height="200" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Chọn loại</label>
+            <select class="form-control" id="category_id" name="category_id">
+                {{#each categories}}
+                <option value="{{this._id}}">{{this.name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Tạo mới</button>
+    </form>
+</div>
+<script>
+    const onChangeFile = (number) => {
+        const file = document.getElementById(`image-file${number}`).files[0];
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById(`image-view${number}`).src = e.target.result;
+            document.getElementById(`image-view${number}`).style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    }
+</script>
+
+

@@ -1,11 +1,17 @@
 const sizeModel = require('./model')
 
 exports.getAll = async () => {
-    return await sizeModel.find();
+    return await sizeModel.find().sort({symbol: -1});
 }
 
 exports.getById = async (id) => {
     const size = await sizeModel.findById(id);
+    return size;
+}
+
+exports.getBySlug = async (slug) => {
+    const size = await sizeModel.findOne({symbol: slug});
+    console.log('size in service: ', size);
     return size;
 }
 

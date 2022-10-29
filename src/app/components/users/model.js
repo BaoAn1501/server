@@ -18,10 +18,6 @@ const userSchema = new Schema({
     phone_number: {
         type: String
     },
-    role: {
-        type: String,
-        default: 'customer'
-    },
     avatar: {
         type: String
     },

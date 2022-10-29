@@ -1,0 +1,34 @@
+<div class="mt-4">
+    <h2>Cập nhật Loại</h2>
+    <form role="form" method="POST" action="/categories/{{category._id}}/edit" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Tên loại</label>
+            <input value="{{category.name}}" name="name" type="text" class="form-control" id="name" placeholder="Enter name">
+        </div>
+        <div class="form-group">
+            <label>Mô tả</label>
+            <textarea  name="description" rows="3" class="form-control" id="description" placeholder="Enter description">{{category.description}}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Hình ảnh</label>
+            <input onchange="onChangeFile();" type="file" id="image-file" name="image">
+            <img style="object-fit: cover;" src="{{category.image}}"  id="image-view" width="200" height="200" />
+        </div>
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+    </form>
+</div>
+<script>
+    const onChangeFile = () => {
+        const file = document.getElementById('image-file').files[0];
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('image-view').src = e.target.result;
+            document.getElementById('image-view').style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    }
+    
+
+</script>
+
+

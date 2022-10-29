@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
+const mongooseDelete = require('mongoose-delete');
 
 const productSizeSchema = new Schema({
     id: {
@@ -21,5 +22,9 @@ const productSizeSchema = new Schema({
         required: true,
     }
 });
+productSizeSchema.plugin(mongooseDelete, {
+    deletedAt: true,
+    overrideMethods: 'all'
+});
 productSizeSchema.set('timestamps', true);
-module.exports = mongoose.model('size', productSizeSchema);
+module.exports = mongoose.model('product_size', productSizeSchema);
