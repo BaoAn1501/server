@@ -14,7 +14,7 @@ class SiteController {
             password,
             confirm_password,
         } = req.body;
-        const result = await adminController.register(email, password, confirm_password);
+        const result = await adminController.register(email, password);
         if (result == 1) {
             res.json({
                 status: false,
@@ -75,21 +75,13 @@ class SiteController {
             full_name,
             email,
             password,
-            confirm_password,
-            phone_number,
         } = req.body;
-        const result = await userController.register(full_name, email, password, confirm_password, phone_number);
+        const result = await userController.register(full_name, email, password);
         if (result == 1) {
             console.log('result: ', result);
             res.json({
                 status: false,
                 message: "Email đã được đăng ký trước đó"
-            });
-        } else if (result == 2) {
-            console.log('result: ', result);
-            res.json({
-                status: false,
-                message: "Số điện thoại đã được đăng ký trước đó"
             });
         } else {
             console.log('result: ', result);
@@ -128,6 +120,12 @@ class SiteController {
                 token
             });
         }
+    }
+
+    async forgot(req, res, next) {
+        const { email } = req.body;
+        
+        
     }
 
     showLogin(req, res, next) {

@@ -2,7 +2,7 @@ const categoryModel = require('./model')
 
 exports.getAll = async () => {
     const p = await categoryModel.find();
-    console.log('lay tat ca loai / service', p);
+    console.log('lay tat ca loai / service');
     return p;
 }
 

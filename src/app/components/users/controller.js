@@ -1,5 +1,9 @@
 const userService = require('./service');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { HOST } = require('../../../util/constants');
+const mailgun = require('mailgun-js');
+
 
 exports.login = async (email, password) => {
     const user = await userService.login(email);
@@ -15,20 +19,44 @@ exports.login = async (email, password) => {
     };
 }
 
-exports.register = async (full_name, email, password, confirm_password, phone_number) => {
+exports.register = async (full_name, email, password) => {
     let user = await userService.login(email);
     if (user)
         return 1;
     const users = await userService.getAll();
-    const findPhone = users.find(user => user.phone_number === phone_number);
-    if (findPhone) {
-        return 2;
-    }
     const hash = await bcrypt.hash(password, await bcrypt.genSalt(10));
-    user = await userService.register(full_name, email, hash, phone_number);
+    user = await userService.register(full_name, email, hash);
     return {
         _id: user._id
     };
+}
+
+exports.forgot = async (email) => {
+    let user = await userService.login(email);
+    if(email !== user.email){
+        return 1;
+    }
+    const payload = {
+        id: user._id,
+        email: user.email
+    }
+    const token = jwt.sign(payload, 'myKey', {expiresIn: '3m'});
+    console.log('token: ', token);
+    const data = {
+        from: 'noreply@hello.com',
+        to: email,
+        subject: 'Account activation link',
+        html: `
+            <h2>Nhấn vào link để đặt lại mật khẩu</h2>
+            <p>${HOST}/user/reset/${token}</p>`
+    }
+    const updateLink = await userService.updateLink(token);
+    if(!updateLink){
+        return null;
+    } else {
+        
+    }
+    
 }
 
 exports.getAll = async () => {
@@ -37,9 +65,30 @@ exports.getAll = async () => {
         user = {
             full_name: user.full_name,
             email: user.email,
-            phone_number: user.phone_number,
         }
         return user;
     });
     return data;
 }
+
+exports.getById = async (id) => {
+    let user = await userService.getById(id);
+    console.log('user service in controller: ', user);
+    user = {
+        full_name: user.full_name,
+        email: user.email,
+        avatar: user.avatar
+    }
+    return user;
+}
+
+exports.delete = async (id) => {
+    return await userService.delete(id);
+}
+
+exports.update = async (id, full_name) => {
+    return await userService.update(id, full_name);
+}
+
+
+

@@ -16,9 +16,8 @@ class CategoryController {
     async one(req, res, next) {
         const { id } = req.params;
         const products = await pController.getAll();
-        console.log('all products: ', products);
         const category = products.filter(item => {
-            return item.category_id._id == id;
+            return String(item.category_id._id) === id;
         })
         res.json(category);
     }

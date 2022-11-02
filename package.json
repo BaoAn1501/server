@@ -32,6 +32,7 @@
     "file-url": "^4.0.0",
     "jquery": "^3.6.1",
     "jsonwebtoken": "^8.5.1",
+    "mailgun-js": "^0.22.0",
     "method-override": "^3.0.0",
     "mongodb": "^4.10.0",
     "mongoose": "^6.6.5",

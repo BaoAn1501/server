@@ -1,6 +1,7 @@
 const productModel = require('./model')
 
 exports.getAll = async () => {
+    console.log('lấy tất cả sản phẩm service');
     return await productModel.find().populate('category_id');
 }
 

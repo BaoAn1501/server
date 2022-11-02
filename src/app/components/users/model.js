@@ -15,9 +15,6 @@ const userSchema = new Schema({
     password: {
         type: String
     },
-    phone_number: {
-        type: String
-    },
     avatar: {
         type: String
     },

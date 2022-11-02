@@ -25,26 +25,10 @@ const enumStatusOrder ={
     nameEng: 'Pending',
     code: 1,
   },
-  processing:{
-    name: 'Đang xử lý',
-    nameEng: 'Processing',
+  processed:{
+    name: 'Đã được xử lý',
+    nameEng: 'Processed',
     code: 2,
-  },
-  shipping:{
-    name: 'Đang giao hàng',
-    nameEng: 'Shipping',
-    code: 3,
-  },
-  completed:{
-    name: 'Đã hoàn thành',
-    nameEng: 'Completed',
-    code: 4,
-  },
-  canceled:{
-    name: 'Đã hủy',
-    nameEng: 'Canceled',
-    code: 4,
   }
-  
 }
-module.exports = { HOST, enumStatusOrder,enumStatusProduct };
+module.exports = { HOST, enumStatusOrder, enumStatusProduct };

@@ -1,6 +1,7 @@
 const productService = require('./service');
 
 exports.getAll = async () => {
+    console.log('lấy tất cả sản phẩm controller');
     let data = await productService.getAll();
     data = data.map(item => {
         item = {
