@@ -6,14 +6,17 @@ class CategoryController {
 
     // [GET] /api/categories
     async index(req, res, next) {
+        console.log('run categories all');
         await controller.getAll()
         .then(categories => {
+            console.log(categories, 'categories in controller$');
             res.json(categories);
         })
-        .catch(next);
+        .catch(error => res.json(error));
     }
     // [GET] /api/categories/:id
     async one(req, res, next) {
+        console.log('run category one');
         const { id } = req.params;
         const products = await pController.getAll();
         const category = products.filter(item => {

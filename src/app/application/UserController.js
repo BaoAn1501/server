@@ -61,6 +61,75 @@ class UserController {
             res.json({});
         }
     }
+
+    async getAddress (req, res, next) {
+        const {id, idAds} = req.params;
+        console.log('id user: ', id, 'id address: ', idAds);
+        const result = await addressController.getById(idAds);
+        if(result){
+            console.log('find address result: ', result);
+            res.json(result)
+        } else {
+            console.log('find address result none');
+            res.json({});
+        }
+    }
+
+    async updateAddress (req, res, next) {
+        const {id, idAds} = req.params;
+        console.log('id user: ', id, 'id address: ', idAds);
+        let { body } = req;
+        body = {
+            user_id: id,
+            ...body
+        }
+        const result = await addressController.update(idAds, body);
+        if(result){
+            console.log('find address result: ', result);
+            res.json(result)
+        } else {
+            console.log('find address result none');
+            res.json({});
+        }
+    }
+
+    async deleteAddress (req, res, next) {
+        const {id, idAds} = req.params;
+        console.log('id user delete: ', id, 'id address: ', idAds);
+        await addressController.delete(idAds)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.json(error);
+        })
+    }
+
+    async setDefault(req, res, next) {
+        const {id, idAds} = req.params;
+        console.log('id user setDefault: ', id, 'id address: ', idAds);
+        await addressController.setDefault(idAds)
+        .then(async result => {
+            if(result){
+                const allAddress = await addressController.getAll(id);
+                const findIdOldDefault = allAddress.map(item => {
+                    console.log('id item: ', item._id, ' default: ', item.default, )
+                    return (item.default === true && item._id != idAds) ? String(item._id) : null;
+                })
+                console.log('id of old default address: ', findIdOldDefault)
+                if(findIdOldDefault){
+                    console.log(findIdOldDefault);
+                    await addressController.setNonDefault(findIdOldDefault)
+                    .then(result => {
+                        if(result){
+                            res.json({message: 'Đổi địa chỉ mặc định thành công'});
+                        }
+                    })
+                    .catch(error => res.json(error));
+                }
+            }
+        })
+    }
     
 }
 

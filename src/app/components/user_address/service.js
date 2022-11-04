@@ -10,6 +10,7 @@ exports.getAll = async (id) => {
 
 exports.getById = async (id) => {
     const address = await addressModel.findById(id).populate('user_id');
+    console.log('find address service: ', address);
     return address;
 }
 
@@ -23,5 +24,17 @@ exports.update = async (id, data) => {
 }
 
 exports.delete = async (id) => {
-    return await addressModel.deleteById(id);
+    return await addressModel.findByIdAndDelete(id);
+}
+
+exports.setDefault = async (id) => {
+    return await addressModel.findByIdAndUpdate(id, {
+        default: true
+    })
+}
+
+exports.setNonDefault = async (id) => {
+    return await addressModel.findByIdAndUpdate(id, {
+        default: false
+    })
 }

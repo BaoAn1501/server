@@ -1,7 +1,6 @@
 const categoryService = require('./service');
 
 exports.getAll = async () => {
-    console.log('lay tat ca loai / controller');
     let data = await categoryService.getAll();
     data = data.map(item => {
         item = {
@@ -12,6 +11,7 @@ exports.getAll = async () => {
         }
         return item;
     });
+    console.log('lay tat ca loai / controller: ', data);
     return data;
 }
 

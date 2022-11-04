@@ -7,6 +7,7 @@ class ProductController {
 
     // [GET] /api/products
     async index(req, res, next) {
+        console.log('run order all');
         const products = await controller.getAll();
         res.json(products);
     }
