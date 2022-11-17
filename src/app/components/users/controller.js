@@ -75,6 +75,7 @@ exports.getById = async (id) => {
     let user = await userService.getById(id);
     console.log('user service in controller: ', user);
     user = {
+        id: user._id,
         full_name: user.full_name,
         email: user.email,
         avatar: user.avatar

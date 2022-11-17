@@ -6,6 +6,7 @@ exports.getAll = async (id) => {
         item = {
             _id: item._id,
             name: item.product_id.name,
+            description: item.product_id.description,
             image1: item.product_id.image1,
             image2: item.product_id.image2,
             image3: item.product_id.image3,
@@ -45,6 +46,7 @@ exports.getOne = async (id, size) => {
     item = {
         _id: item._id,
         name: item.product_id.name,
+        description: item.product_id.description,
         image1: item.product_id.image1,
         image2: item.product_id.image2,
         image3: item.product_id.image3,
@@ -56,6 +58,8 @@ exports.getOne = async (id, size) => {
     }
     return item;
 }
+
+
 
 exports.insert = async (body) => {
     return await productSizeService.insert(body);

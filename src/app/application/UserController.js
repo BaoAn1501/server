@@ -20,11 +20,11 @@ class UserController {
     }
     async change(req, res, next) {
         const { id } = req.params;
-        const { full_name, avatar } = req.body;
-        await controller.update(id, full_name, avatar)
+        const { full_name } = req.body;
+        await controller.update(id, full_name)
         .then(function(result){
             if(result){
-                res.json('Đổi thông tin thành công');
+                res.json('Đổi tên người dùng thành công');
             }
         }).catch(error => {
             res.json('Lỗi: ', error)
