@@ -7,16 +7,23 @@ const userController = require('../app/application/UserController');
 
 router.get('/categories/:id', categoryController.one);
 router.get('/categories', categoryController.index);
+router.post('/products/:id/:slug/save', productController.saveCart);
 router.get('/products/:id/:slug', productController.oneSlug);
 router.get('/products/:id', productController.one);
+router.get('/products', productController.index);
+
 router.post('/users/:id/address/insert', userController.addAddress);
 router.post('/users/:id/address/:idAds/update', userController.updateAddress);
 router.delete('/users/:id/address/:idAds/delete', userController.deleteAddress);
 router.patch('/users/:id/address/:idAds/setDefault', userController.setDefault);
 router.get('/users/:id/address/:idAds', userController.getAddress);
 router.get('/users/:id/address', userController.allAddress);
+router.post('/users/:id/cart/:cid/update/minus', productController.minusCart);
+router.post('/users/:id/cart/:cid/update/plus', productController.plusCart);
+router.delete('/users/:id/cart/:cid/delete', productController.deleteCart);
+router.get('/users/:id/cart', productController.cart);
+router.post('/users/:id/changeName', userController.change);
 router.get('/users/:id', userController.one);
-router.get('/products', productController.index);
 // router.post('/orders/create', orderController.create);
 
 

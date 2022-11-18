@@ -24,7 +24,7 @@ class UserController {
         await controller.update(id, full_name)
         .then(function(result){
             if(result){
-                res.json('Đổi tên người dùng thành công');
+                res.json({message: 'Đổi tên người dùng thành công'});
             }
         }).catch(error => {
             res.json('Lỗi: ', error)

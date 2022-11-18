@@ -63,6 +63,7 @@ exports.getAll = async () => {
     let data = await userService.getAll();
     data = data.map(user => {
         user = {
+            _id: user._id,
             full_name: user.full_name,
             email: user.email,
         }
@@ -75,7 +76,7 @@ exports.getById = async (id) => {
     let user = await userService.getById(id);
     console.log('user service in controller: ', user);
     user = {
-        id: user._id,
+        _id: user._id,
         full_name: user.full_name,
         email: user.email,
         avatar: user.avatar

@@ -28,7 +28,7 @@ exports.getById = async (id) => {
 }
 
 exports.update = async (id, full_name) => {
-    return await userModel.findByIdAndUpdate(id, full_name);
+    return await userModel.findByIdAndUpdate(id, {full_name: full_name});
 }
 
 exports.updateLink = async (token) => {

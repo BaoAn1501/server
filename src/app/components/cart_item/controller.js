@@ -1,17 +1,39 @@
 const cartService = require('./service');
 
-exports.getAll = async () => {
-    let data = await cartService.getCart();
+exports.getAll = async (id) => {
+    let data = await cartService.getCart(id);
     data = data.map(item => {
         item = {
-            _id: item._id,
-            productSize_id: item.productSize_id,
-            user_id: item.user_id,
-            quantity: item.quantity,
+            ...item?._doc
         }
         return item;
     });
     return data;
+}
+
+exports.getById = async (id) => {
+    let data = await cartService.getById(id);
+    data = {
+        ...data?._doc
+    }
+    console.log('has data', data);
+    return data;
+}
+
+exports.getOne = async (productSize_id, user_id) => {
+    let data = await cartService.getCartItem(productSize_id, user_id);
+    console.log('cart item controller: ', data);
+    if(data){
+        data = {
+            ...data?._doc
+        }
+        console.log('has data', data);
+        return data;
+    }
+    else {
+        console.log('no data', data);
+        return null;
+    }
 }
 
 exports.insert = async (cart) => {
@@ -22,6 +44,6 @@ exports.delete = async (id) => {
     return await cartService.delete(id);
 }
 
-exports.update = async (id, cart) => {
-    return await cartService.update(id, cart);
+exports.update = async (id, quantity) => {
+    return await cartService.update(id, quantity);
 }
