@@ -3,14 +3,12 @@ const addressModel = require('./model');
 exports.getAll = async (id) => {
     const allAddress = await addressModel.find({
         user_id: id
-    }).populate('user_id');
-    console.log('all address service: ', allAddress);
+    }).populate('user_id').sort({default: -1});
     return allAddress;
 }
 
 exports.getById = async (id) => {
     const address = await addressModel.findById(id).populate('user_id');
-    console.log('find address service: ', address);
     return address;
 }
 
@@ -20,7 +18,8 @@ exports.insert = async (data) => {
 }
 
 exports.update = async (id, data) => {
-    return await addressModel.findByIdAndUpdate(id, data);
+    console.log('update address service: ');
+    return await addressModel.findByIdAndUpdate(id, data, {new: true});
 }
 
 exports.delete = async (id) => {

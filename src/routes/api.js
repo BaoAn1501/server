@@ -14,13 +14,13 @@ router.get('/products', productController.index);
 
 router.post('/users/:id/address/insert', userController.addAddress);
 router.post('/users/:id/address/:idAds/update', userController.updateAddress);
-router.delete('/users/:id/address/:idAds/delete', userController.deleteAddress);
-router.patch('/users/:id/address/:idAds/setDefault', userController.setDefault);
+router.post('/users/:id/address/:idAds/delete', userController.deleteAddress);
 router.get('/users/:id/address/:idAds', userController.getAddress);
 router.get('/users/:id/address', userController.allAddress);
 router.post('/users/:id/cart/:cid/update/minus', productController.minusCart);
 router.post('/users/:id/cart/:cid/update/plus', productController.plusCart);
-router.delete('/users/:id/cart/:cid/delete', productController.deleteCart);
+router.post('/users/:id/cart/:cid/delete', productController.deleteCart);
+router.post('/users/:id/cart/delete', productController.deleteAllCart);
 router.get('/users/:id/cart', productController.cart);
 router.post('/users/:id/changeName', userController.change);
 router.get('/users/:id', userController.one);

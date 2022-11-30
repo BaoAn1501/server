@@ -37,16 +37,34 @@ class UserController {
         let { body } = req;
         body = {
             user_id: id,
-            ...body
+            number: body.body.number,
+            street: body.body.street,
+            ward: body.body.ward,
+            district: body.body.district,
+            city: body.body.city,
+            phone_number: body.body.phone_number,
+            default: body.body.default
         }
-        const result = await addressController.insert(body)
-        if(result){
-            console.log(result);
-            res.json(result);
-        } else {
-            console.log('error');
-            res.json({});
-        }
+        console.log('body: ', body);
+        await addressController.insert(body)
+        .then(async (result) => {
+            if(result.default == true) {
+                console.log('id cur: ', result._id);
+                await addressController.getAll(id).then(
+                    async (result1) => {
+                        result1 = result1.filter(item => {
+                            return String(item._id) !== String(result._id) && item.default === true; 
+                        })
+                        console.log(result1);
+                        if(result1.length>0){
+                            await addressController.setNonDefault(result1[0]._id)
+                            .then(res.json({message: "Thêm địa chỉ thành công"}));
+                        }
+                    }
+                    
+                );
+            }
+        })
     }
 
     async allAddress (req, res, next) {
@@ -77,28 +95,71 @@ class UserController {
 
     async updateAddress (req, res, next) {
         const {id, idAds} = req.params;
-        console.log('id user: ', id, 'id address: ', idAds);
         let { body } = req;
         body = {
             user_id: id,
-            ...body
+            number: body.body.number,
+            street: body.body.street,
+            ward: body.body.ward,
+            district: body.body.district,
+            city: body.body.city,
+            phone_number: body.body.phone_number,
+            default: body.body.default
         }
-        const result = await addressController.update(idAds, body);
-        if(result){
-            console.log('find address result: ', result);
-            res.json(result)
-        } else {
-            console.log('find address result none');
-            res.json({});
-        }
+        console.log('update address id user: ', id, 'id address: ', idAds, 'body: ', body);
+        await addressController.update(idAds, body)
+        .then(async (result) => {
+            console.log('result after update address: ', result);
+            if(result.default == true) {
+                console.log('id cur: ', result._id);
+                await addressController.getAll(id).then(
+                    async (result1) => {
+                        result1 = result1.filter(item => {
+                            return String(item._id) !== String(result._id) && item.default === true; 
+                        })
+                        console.log(result1);
+                        if(result1.length>0){
+                            await addressController.setNonDefault(result1[0]._id)
+                            .then(res.json({message: "Cập nhật địa chỉ thành công"}));
+                        }
+                    }
+                );
+            } else {
+                res.json({message: "Cập nhật địa chỉ thành công"})
+            }
+        })
+        .catch(error => res.json(error));
     }
 
     async deleteAddress (req, res, next) {
         const {id, idAds} = req.params;
         console.log('id user delete: ', id, 'id address: ', idAds);
         await addressController.delete(idAds)
-        .then(result => {
-            res.json(result);
+        .then(async (result) => {
+            if(result.default == true) {
+                await addressController.getAll(id).then(
+                    async (result1) => {
+                        if(result1.length>0){
+                            const address = {
+                                user_id: id,
+                                number: result1[0].number,
+                                street: result1[0].street,
+                                ward: result1[0].ward,
+                                district: result1[0].district,
+                                city: result1[0].city,
+                                phone_number: result1[0].phone_number,
+                                default: true
+                            }
+                            await addressController.update(result1[0]._id, address)
+                            .then(()=>{
+                                res.json({message: 'Xóa địa chỉ thành công'});
+                            })
+                            .catch(error => res.json(error));
+                        }
+                    }
+                    
+                );
+            }
         })
         .catch(error => {
             res.json(error);
@@ -130,6 +191,7 @@ class UserController {
             }
         })
     }
+    
     
 }
 

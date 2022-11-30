@@ -18,7 +18,7 @@ const cartItemSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'user',
         required: true,
-    }
+    },
 });
 
 cartItemSchema.set('timestamps', true);

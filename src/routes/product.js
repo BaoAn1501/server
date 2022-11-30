@@ -19,7 +19,7 @@ router.post('/create', [upload.fields([{
 ]), authentication.checkLogin], productController.insert);
 router.get('/:id/edit', [authentication.checkLogin], productController.one);
 router.post('/:id/size', [authentication.checkLogin], productSizeController.update);
-router.get('/:id/size', [authentication.checkLogin], productSizeController.index);
+router.get('/:id/size', productSizeController.index);
 router.get('/:id/product-size', productSizeController.sizes);
 router.delete('/:id/delete', [authentication.checkLogin], productController.delete);
 router.post('/:id/edit', [upload.fields([{

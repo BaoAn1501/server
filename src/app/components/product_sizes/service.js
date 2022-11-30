@@ -14,6 +14,10 @@ exports.getOne = async (id, size) => {
     }).populate(['size_id', 'product_id']);
 }
 
+exports.getById = async (id) => {
+    return await productSizeModel.findById(id).populate(['size_id', 'product_id']);
+}
+
 exports.insert = async (body) => {
     const p = new productSizeModel(body);
     return await p.save();

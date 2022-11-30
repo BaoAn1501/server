@@ -17,10 +17,7 @@ exports.getAll = async () => {
 exports.getBySlug = async (slug) => {
     let size = await sizeService.getBySlug(slug);
     size = {
-        _id: size._id,
-        symbol: size.symbol,
-        value: size.value,
-        slug: size.slug,
+        ...size?._doc
     }
     return size;
 }
@@ -28,10 +25,7 @@ exports.getBySlug = async (slug) => {
 exports.getById = async (id) => {
     let size = await sizeService.getById(id);
     size = {
-        _id: size._id,
-        symbol: size.symbol,
-        value: size.value,
-        slug: size.slug,
+        ...size?._doc
     }
     return size;
 }

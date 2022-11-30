@@ -6,27 +6,27 @@ const userAddressSchema = new Schema({
     id: {
         type: ObjectId
     },
-    number: {
+    number: { // số nhà
         type: String,
         required: true
     },
-    street: {
+    street: { // đường
         type: String,
         required: true
     },
-    ward: {
+    ward: { // phường
         type: String,
         required: true
     },
-    district: {
+    district: { // quận
         type: String,
         required: true
     },
-    city: {
+    city: { // thành phố
         type: String,
         required: true
     },
-    phone_number: {
+    phone_number: { // sdt
         type: String,
         required: true
     },

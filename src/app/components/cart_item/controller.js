@@ -44,6 +44,11 @@ exports.delete = async (id) => {
     return await cartService.delete(id);
 }
 
+exports.deleteAll = async (id) => {
+    console.log('delete controller all');
+    return await cartService.deleteAll(id);
+}
+
 exports.update = async (id, quantity) => {
     return await cartService.update(id, quantity);
 }

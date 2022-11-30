@@ -1,3 +1,4 @@
+const { use } = require('../../../routes/api');
 const cartModel = require('./model')
 
 exports.getCart = async (id) => {
@@ -8,7 +9,7 @@ exports.getCart = async (id) => {
 
 exports.getById = async (id) => {
     const p = await cartModel.findById(id)
-    .populate(['productSize_id', 'user_id']).sort( {user_id: 1})
+    .populate(['productSize_id', 'user_id']).sort( {productSize_id: 1})
     return p;
 }
 
@@ -27,6 +28,11 @@ exports.insert = async (cart) => {
 exports.delete = async (id) => {
     console.log('delete in service');
     return await cartModel.findByIdAndDelete(id);
+}
+
+exports.deleteAll = async (id) => {
+    console.log('delete service all');
+    return await cartModel.deleteMany({user_id: id});
 }
 
 exports.update = async (id, quantity) => {

@@ -6,35 +6,26 @@ exports.getAll = async (id) => {
     data = data.map(address => {
         address = {
             _id: address._id,
-            address: address.number + ', ' 
-            + address.street + ', ' 
-            + address.ward + ', '
-            + address.district + ', '
-            + address.city,
+            address: 'số ' + address.number
+            + ', đường ' + address.street
+            + ', phường ' + address.ward
+            + ', quận ' + address.district
+            + ', ' + address.city,
             phone_number: address.phone_number,
             default: address.default,
             user_id: address.user_id
         }
         return address;
     });
-    console.log('all address controller: ', data);
     return data;
 }
 
 exports.getById = async (id) => {
-    const result = await addressService.getById(id);
-    address = {
-        _id: result._id,
-        address: result.number + ', ' 
-        + result.street + ', ' 
-        + result.ward + ', '
-        + result.district + ', '
-        + result.city,
-        phone_number: result.phone_number,
-        default: result.default,
-        user_id: result.user_id
+    let result = await addressService.getById(id);
+    result = {
+        ...result?._doc
     }
-    return address;
+    return result;
 }
 
 exports.insert = async (data) => {
@@ -44,6 +35,7 @@ exports.insert = async (data) => {
 
 exports.update = async (id, data) => {
     const result = await addressService.update(id, data);
+    console.log('update address controller: ');
     return result;
 }
 

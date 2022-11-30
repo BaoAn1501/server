@@ -140,12 +140,46 @@ class ProductController {
       });
   }
 
+  async deleteAllCart(req, res, next) {
+    const { id } = req.params;
+    await cartController
+      .deleteAll(id)
+      .then(() => {
+        res.json({ message: "Đã xóa tất cả sản phẩm" });
+      })
+      .catch((error) => {
+        res.json(error);
+      });
+  }
+
   async cart(req, res, next) {
     const { id } = req.params;
     await cartController
       .getAll(id)
       .then((carts) => {
-        res.json(carts);
+        carts = carts.map(async cart => {
+          const productSize_id = await productSizeController.getById(cart.productSize_id._id);
+          cart.productSize_id = productSize_id;
+          return cart;
+        })
+        Promise.all(carts).then((result) => {
+          result = result.sort((a, b) => {
+            if (a.productSize_id.product_id.name < b.productSize_id.product_id.name) {
+              return -1;
+            } else if(a.productSize_id.product_id.name > b.productSize_id.product_id.name){
+              return 1;
+            } else {
+              if (a.productSize_id.size_id.symbol > b.productSize_id.size_id.symbol) {
+                return -1;
+              } else if(a.productSize_id.size_id.symbol < b.productSize_id.size_id.symbol) {
+                return 1;
+              } else {
+                return 0;
+              }
+            }
+          });
+          res.json(result);
+        });
       })
       .catch((error) => {
         res.json(error);

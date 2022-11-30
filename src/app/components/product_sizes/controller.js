@@ -59,6 +59,13 @@ exports.getOne = async (id, size) => {
     return item;
 }
 
+exports.getById = async (id, size) => {
+    let item = await productSizeService.getById(id);
+    item = {
+       ...item?._doc
+    }
+    return item;
+}
 
 
 exports.insert = async (body) => {
