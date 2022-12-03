@@ -1,0 +1,109 @@
+<div class="mt-4">
+    <h2>Cập nhật sản phẩm</h2>
+    <div style="flex-direction: row; margin-top: 20px; {{buttons order.status.code}}">
+        <button id="ok" type="button" class="btn btn-success">Xác nhận</button>
+        <button id="cancel" style="margin-left: 20px;" type="button" class="btn btn-danger">Hủy</button>
+    </div>
+    <div style="flex-direction: row; margin-top: 20px">
+        <b>Mã đơn hàng: </b>
+        <a>{{order._id}}</a>
+    </div>
+    <div style="flex-direction: row;">
+        <b>Trạng thái: </b>
+        <a>{{order.status.name}}</a>
+    </div>
+    <div style="flex-direction: row;">
+        <b>Giá trị đơn hàng: </b>
+        <a>{{order.total}} đ</a>
+    </div>
+    <div style="flex-direction: row;">
+        <b>Hình thức thanh toán: </b>
+        <a>{{checkout order.payment_id}}</a>
+    </div>
+    <div style="margin-top: 20px">
+        <b>Thông tin khách hàng:</b>
+        <br/>
+        <div style="flex-direction: row;">
+        <a>Tên khách hàng: </a>
+        <a>{{user.full_name}}</a>
+        </div>
+        <div style="flex-direction: row;">
+        <a>Số điện thoại: </a>
+        <a>{{address.phone_number}}</a>
+        </div>
+        <div style="flex-direction: row;">
+        <a>Địa chỉ email: </a>
+        <a>{{user.email}}</a>
+        </div>
+    </div>
+    <div style="margin-top: 20px">
+        <b>Địa chỉ nhận hàng: </b>
+        <div style="flex-direction: row;">
+        <a>Số nhà: </a>
+        <a>{{address.number}}</a>
+        <a style="margin-left: 20px">Đường</a>
+        <a>{{address.street}}</a>
+        </div>
+        <div style="flex-direction: row;">
+        <a>Phường: </a>
+        <a>{{address.ward}}</a>
+        <a style="margin-left: 20px">Quận: </a>
+        <a>{{address.district}}</a>
+        <a style="margin-left: 20px">Thành phố: </a>
+        <a>{{address.city}}</a>
+        </div>
+    </div>
+    <div style="margin-top: 20px">
+        <b>Danh sách sản phẩm: </b>
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                <th scope="col">STT</th>
+                <th scope="col">
+                Số lượng
+                </th>
+                <th scope="col">
+                Tên
+                </th>
+                <th scope="col">
+                Hình ảnh
+                </th>
+                <th scope="col">
+                Size
+                </th>
+                <th scope="col">
+                Giá
+                </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each list}}
+                <tr>
+                <th scope="row">{{sum @index 1}}</th>
+                <td>{{this.quantity}}</td>
+                <td>{{this.name}}</td>
+                <td>
+                    <img src="{{this.image}}" width="50" height="50" />
+                </td>
+                <td>{{this.size}}</td>
+                <td>{{this.price}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+<form name="ok-form" method="POST" action="/orders/{{order._id}}/status/ok"></form>
+<form name="cancel-form" method="POST" action="/orders/{{order._id}}/status/cancel"></form>
+<script>
+    var ok = $('#ok');
+    var cancel = $('#cancel');
+    var okForm = document.forms['ok-form'];
+    var cancelForm = document.forms['cancel-form'];
+    ok.click(()=>{
+        okForm.submit();
+    })
+    cancel.click(()=>{
+        cancelForm.submit();
+    })
+</script>

@@ -12,6 +12,11 @@ exports.getById = async (id) => {
     return address;
 }
 
+exports.getDefault = async (id) => {
+    const address = await addressModel.findOne({user_id: id, default: true}).populate('user_id');
+    return address;
+}
+
 exports.insert = async (data) => {
     const p = new addressModel(data);
     return await p.save();

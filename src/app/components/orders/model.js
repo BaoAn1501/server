@@ -1,33 +1,27 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
-const mongooseDelete = require('mongoose-delete');
 const { enumStatusOrder } = require('../../../util/constants');
 
 const orderSchema = new Schema({
     id: {
         type: ObjectId
     },
-    user_id: {
+    userAddress_id: {
         type: ObjectId,
-        ref: 'user',
+        ref: 'user_address',
     },
     payment_id: {
-        type: ObjectId,
-        ref: 'payment_detail'
+        type: Number
     },
     status: {
         type: Object,
         default: enumStatusOrder.pending
     },
-    total_amount: {
+    total: {
         type: Number
     }
 });
 
-orderSchema.plugin(mongooseDelete, {
-    deletedAt: true,
-    overrideMethods: 'all'
-});
 orderSchema.set('timestamps', true);
 module.exports = mongoose.model('order', orderSchema);

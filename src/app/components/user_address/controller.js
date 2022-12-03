@@ -28,6 +28,22 @@ exports.getById = async (id) => {
     return result;
 }
 
+exports.getDefault = async (id) => {
+    let address = await addressService.getDefault(id);
+    address = {
+        _id: address._id,
+        address: 'số ' + address.number
+        + ', đường ' + address.street
+        + ', phường ' + address.ward
+        + ', quận ' + address.district
+        + ', ' + address.city,
+        phone_number: address.phone_number,
+        default: address.default,
+        user_id: address.user_id
+    }
+    return address;
+}
+
 exports.insert = async (data) => {
     const result = await addressService.insert(data);
     return result;

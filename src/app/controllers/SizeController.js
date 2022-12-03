@@ -1,6 +1,4 @@
 const sizeController = require('../components/sizes/controller');
-const {mongooseToObject} = require('../../util/mongoose');
-const {arrayMongooseToObject} = require('../../util/mongoose')
 
 class SizeController {
     // [GET] /

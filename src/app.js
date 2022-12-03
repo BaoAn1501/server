@@ -19,6 +19,11 @@ app.engine('hbs', engine({
   extname: '.hbs',
   helpers: {
     sum: (a, b) => a + b,
+    code: (str) => String(str).slice(0, 6) + '***' + String(str).slice(-4), 
+    checkout: (number) => (number == 1) ? 'Tiền mặt' : 'Ví điện tử',
+    buttons: (code) => (code==1) ? '' : 'display: none',
+    convert: (date) => String(date).slice(0, 24),
+    colors: (number) => (number == 1) ? 'blue' : ( number == 2 ? 'green' : 'red'), 
     sortable: (field, sort) => {
       const sortType = field === sort.column ? sort.type : 'default';
       const icons = {

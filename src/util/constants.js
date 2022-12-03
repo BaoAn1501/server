@@ -18,7 +18,6 @@ const enumStatusProduct ={
   }
 }
 
-
 const enumStatusOrder ={
   pending:{
     name: 'Đang chờ xử lý',
@@ -29,6 +28,12 @@ const enumStatusOrder ={
     name: 'Đã được xử lý',
     nameEng: 'Processed',
     code: 2,
+  },
+  canceled: {
+    name: 'Đã hủy',
+    nameEng: 'Canceled',
+    code: 3,
   }
 }
+
 module.exports = { HOST, enumStatusOrder, enumStatusProduct };

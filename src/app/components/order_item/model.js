@@ -24,9 +24,5 @@ const orderItemSchema = new Schema({
     }
 });
 
-orderItemSchema.plugin(mongooseDelete, {
-    deletedAt: true,
-    overrideMethods: 'all'
-});
 orderItemSchema.set('timestamps', true);
 module.exports = mongoose.model('order_item', orderItemSchema);

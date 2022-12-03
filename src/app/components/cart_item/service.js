@@ -26,12 +26,10 @@ exports.insert = async (cart) => {
 }
 
 exports.delete = async (id) => {
-    console.log('delete in service');
     return await cartModel.findByIdAndDelete(id);
 }
 
 exports.deleteAll = async (id) => {
-    console.log('delete service all');
     return await cartModel.deleteMany({user_id: id});
 }
 

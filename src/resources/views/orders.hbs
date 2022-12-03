@@ -1,0 +1,46 @@
+<form class="mt-4" name="container-form" method="GET" action="/orders/handle-form-action">
+    <div>
+      <h3>Quản lý Đơn hàng</h3>
+    </div>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+            <th scope="col">STT</th>
+            <th scope="col">
+              Mã đơn hàng
+              {{!-- {{{sortable 'name' _sort}}} --}}
+            </th>
+            <th scope="col">
+              Tổng tiền (đ)
+              {{!-- {{{sortable 'level' _sort}}} --}}
+            </th>
+            <th scope="col">
+              Tình trạng
+              {{!-- {{{sortable 'level' _sort}}} --}}
+              </th>
+            <th scope="col">
+              Ngày cập nhật
+              {{!-- {{{sortable 'level' _sort}}} --}}
+            </th>
+            <th scope="col">
+              Tùy chọn
+              {{!-- {{{sortable 'createdAt' _sort}}} --}}
+              </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each orders}}
+            <tr>
+            <th scope="row">{{sum @index 1}}</th>
+            <td>{{code this._id}}</td>
+            <td>{{this.total}}</td>
+            <td style="color: {{colors this.status.code}}">{{this.status.name}}</td>
+            <td>{{convert this.updatedAt}}</td>
+            <td>
+              <a href="/orders/{{this._id}}">Xử lý</a>
+            </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</form>

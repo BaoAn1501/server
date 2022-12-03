@@ -37,7 +37,6 @@ exports.getAll = async () => {
         user = {
             full_name: user.full_name,
             email: user.email,
-            avatar: user.avatar
         }
         return user;
     });

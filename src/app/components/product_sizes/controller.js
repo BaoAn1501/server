@@ -59,7 +59,7 @@ exports.getOne = async (id, size) => {
     return item;
 }
 
-exports.getById = async (id, size) => {
+exports.getById = async (id) => {
     let item = await productSizeService.getById(id);
     item = {
        ...item?._doc

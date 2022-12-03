@@ -1,14 +1,10 @@
-const categoryService = require('./service');
+const orderService = require('./service');
 
 exports.getAll = async () => {
-    console.log('lay tat ca loai / controller');
-    let data = await categoryService.getAll();
+    let data = await orderService.getAll();
     data = data.map(item => {
         item = {
-            _id: item._id,
-            name: item.name,
-            description: item.description,
-            image: item.image,
+            ...item?._doc
         }
         return item;
     });
@@ -16,38 +12,17 @@ exports.getAll = async () => {
 }
 
 exports.getById = async (id) => {
-    let category = await categoryService.getById(id);
-    category = {
-        _id: category._id,
-        name: category.name,
-        description: category.description,
-        image: category.image,
+    let item = await orderService.getById(id);
+    item = {
+        ...item?._doc
     }
-    return category;
+    return item;
 }
 
 exports.insert = async (body) => {
-    const data = await categoryService.getAll();
-    const isExisted = data.some(category => {
-        return category.name == body.name;
-    })
-    if (isExisted) {
-        return null;
-    }
-    return await categoryService.insert(body);
+    return data = await orderService.insert(body);
 }
 
-exports.delete = async (id) => {
-    return await categoryService.delete(id);
-}
-
-exports.update = async (id, category) => {
-    const data = await categoryService.getAll();
-    const isExisted = data.some(cat => {
-        return cat._id != id && cat.name == category.name;
-    })
-    if (isExisted) {
-        return null;
-    }
-    return await categoryService.update(id, category);
+exports.update = async (id, status) => {
+    return await orderService.change(id, status);
 }

@@ -5,7 +5,6 @@ const productSizeController = require('../components/product_sizes/controller');
 const fs = require('fs');
 
 class ProductController {
-
     // [GET] /
     async index(req, res, next) {
         const products = await controller.getAll();

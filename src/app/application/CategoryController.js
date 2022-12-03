@@ -1,5 +1,6 @@
 const controller = require('../components/categories/controller');
 const pController = require('../components/products/controller');
+const productSizeController = require("../components/product_sizes/controller");
 const fs = require('fs');
 
 class CategoryController {
@@ -18,12 +19,46 @@ class CategoryController {
     async one(req, res, next) {
         console.log('run category one');
         const { id } = req.params;
-        const products = await pController.getAll();
-        const category = products.filter(item => {
+        let products = await pController.getAll();
+        products = products.filter(item => {
             return String(item.category_id._id) === id;
         })
-        res.json(category);
+        products = products.map(async (item) => {
+            console.log("_id: ", item._id);
+            const minItem = await findMin(item._id);
+            item.price = minItem.price;
+            item.size = minItem.size_symbol;
+            console.log("item after: ", item);
+            return item;
+        });
+        Promise.all(products).then((result) => {
+        result = result.filter((item) => {
+            return item.price > 0;
+        });
+        res.json(result);
+        });
     }
 }
+
+const findMin = async (id) => {
+    const products = await productSizeController.getAll(id);
+    // console.log('all productSize: ', products);
+    const list = products.filter((item) => {
+      return Number(item.price) > 0;
+    });
+    // console.log('list > 0: ', list);
+    // console.log('list has price > 0 length: ', list.length);
+    let t;
+    if (list.length > 0) {
+      // console.log('find min running');
+      t = list.reduce(function (accumulator, element) {
+        return accumulator.price < element.price ? accumulator : element;
+      });
+      console.log("t: ", t);
+      return t;
+    } else {
+      return null;
+    }
+  };
 
 module.exports = new CategoryController();

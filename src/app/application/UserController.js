@@ -191,6 +191,22 @@ class UserController {
             }
         })
     }
+
+    async getDefaultAddress (req, res, next) {
+        const {id} = req.params;
+        const allAddress = await addressController.getAll(id);
+        const _default = await addressController.getDefault(id);
+        const firstAddress = allAddress[0];
+        if(allAddress.length>0){
+            if(_default){
+                res.json(_default);
+            } else {
+                res.json(firstAddress);
+            }
+        } else {
+            res.json({});
+        }
+    }
     
     
 }
