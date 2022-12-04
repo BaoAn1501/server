@@ -2,7 +2,9 @@ const orderController = require('../components/orders/controller');
 const sizeController = require('../components/sizes/controller');
 const productSizeController = require('../components/product_sizes/controller');
 const productController = require('../components/products/controller');
+const userController = require('../components/users/controller');
 const cartController = require('../components/cart_item/controller');
+const addressController = require('../components/user_address/controller');
 const orderItemController = require('../components/order_item/controller');
 const reviewController = require('../components/reviews/controller');
 const { enumStatusOrder } = require('../../util/constants');
@@ -48,10 +50,35 @@ class OrderController {
     }
 
     async one(req, res, next) {
-        const {id, ido} = req.params;
-        await orderController.getById(ido)
-        .then((result)=>{
-            res.json(result);
+        const {
+            id, ido
+        } = req.params;
+        const order = await orderController.getById(ido);
+        const user = await userController.getById(order.userAddress_id.user_id);
+        const address = await addressController.getById(order.userAddress_id._id);
+        const orderItem = await orderItemController.getAll(ido);
+        const list = orderItem.map(async (item) => {
+            const s = await sizeController.getById(item.productSize_id.size_id);
+            const size = s.symbol;
+            const p = await productController.getById(item.productSize_id.product_id);
+            const image = p.image1;
+            const name = p.name;
+            item = {
+                image: image,
+                name: name,
+                size: size,
+                price: item.price,
+                quantity: item.quantity
+            }
+            return item;
+        })
+        Promise.all(list).then((list) => {
+            res.json({
+                order: order,
+                user: user,
+                address: address,
+                list: list
+            })
         })
         .catch(error => res.json(error));
     }

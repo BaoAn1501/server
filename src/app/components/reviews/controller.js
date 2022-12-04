@@ -13,6 +13,7 @@ exports.getByProduct = async (id) => {
 
 exports.getByUserYet = async (id) => {
     let data = await reviewService.getUserYet(id);
+    console.log('data reviews yet: ', data);
     data = data.map(item => {
         item = {
             ...item?._doc,

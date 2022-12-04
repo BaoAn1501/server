@@ -7,6 +7,7 @@ exports.getByProduct = async (id) => {
 
 exports.getUserYet = async (id) => {
     const reviews = await reviewModel.find({user_id: id, status: false}).populate(['user_id', 'product_id']);
+    console.log('get reviews yeu: ', reviews);
     return reviews;
 }
 
@@ -21,6 +22,6 @@ exports.insert = async (review) => {
 }
 
 exports.update = async (id, review) => {
-    const u = await reviewModel.findByIdAndUpdate(id, {score: review.score, remarks: review.remarks, status: true});
+    const u = await reviewModel.findByIdAndUpdate(id, {score: review.score, remarks: review.remarks, status: true}, {new: true});
     return u;
 }

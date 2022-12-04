@@ -3,6 +3,7 @@ const categoryController = require("../components/categories/controller");
 const sizeController = require("../components/sizes/controller");
 const productSizeController = require("../components/product_sizes/controller");
 const cartController = require("../components/cart_item/controller");
+const reviewController = require("../components/reviews/controller");
 
 class ProductController {
   // [GET] /api/products
@@ -157,21 +158,35 @@ class ProductController {
     await cartController
       .getAll(id)
       .then((carts) => {
-        carts = carts.map(async cart => {
-          const productSize_id = await productSizeController.getById(cart.productSize_id._id);
+        carts = carts.map(async (cart) => {
+          const productSize_id = await productSizeController.getById(
+            cart.productSize_id._id
+          );
           cart.productSize_id = productSize_id;
           return cart;
-        })
+        });
         Promise.all(carts).then((result) => {
           result = result.sort((a, b) => {
-            if (a.productSize_id.product_id.name < b.productSize_id.product_id.name) {
+            if (
+              a.productSize_id.product_id.name <
+              b.productSize_id.product_id.name
+            ) {
               return -1;
-            } else if(a.productSize_id.product_id.name > b.productSize_id.product_id.name){
+            } else if (
+              a.productSize_id.product_id.name >
+              b.productSize_id.product_id.name
+            ) {
               return 1;
             } else {
-              if (a.productSize_id.size_id.symbol > b.productSize_id.size_id.symbol) {
+              if (
+                a.productSize_id.size_id.symbol >
+                b.productSize_id.size_id.symbol
+              ) {
                 return -1;
-              } else if(a.productSize_id.size_id.symbol < b.productSize_id.size_id.symbol) {
+              } else if (
+                a.productSize_id.size_id.symbol <
+                b.productSize_id.size_id.symbol
+              ) {
                 return 1;
               } else {
                 return 0;
@@ -180,6 +195,55 @@ class ProductController {
           });
           res.json(result);
         });
+      })
+      .catch((error) => {
+        res.json(error);
+      });
+  }
+
+  async getByProduct(req, res, next) {
+    const { id } = req.params;
+    await reviewController
+      .getByProduct(id)
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((error) => res.json(error));
+  }
+  // [POST] /api/users/:id/review/yet
+  async getByUserYet(req, res, next) {
+    const { id } = req.params;
+    console.log('get id user review: ', id);
+    await reviewController
+      .getByUserYet(id)
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((error) => res.json(error));
+  }
+  // [POST] /api/users/:id/review/already
+  async getByUserAl(req, res, next) {
+    const { id } = req.params;
+    await reviewController
+      .getByUserAl(id)
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((error) => res.json(error));
+  }
+
+  async rate(req, res, next) {
+    const { id, _id } = req.params;
+    let { body } = req;
+        body = {
+            score: body.body.score,
+            remarks: body.body.remarks
+        }
+    console.log('data: ', body);
+    await reviewController
+      .update(_id, body)
+      .then(() => {
+        res.json({message: "Đánh giá sản phẩm thành công"})
       })
       .catch((error) => {
         res.json(error);

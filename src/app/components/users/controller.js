@@ -72,7 +72,6 @@ exports.getAll = async () => {
 
 exports.getById = async (id) => {
     let user = await userService.getById(id);
-    console.log('user service in controller: ', user);
     user = {
         ...user?._doc
     }
