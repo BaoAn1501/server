@@ -3,11 +3,12 @@ const categoryController = require('../components/categories/controller');
 const sizeController = require('../components/sizes/controller');
 const productSizeController = require('../components/product_sizes/controller');
 const fs = require('fs');
+const { enumStatusProduct } = require('../../util/constants');
 
 class ProductController {
     // [GET] /
     async index(req, res, next) {
-        const products = await controller.getAll();
+        const products = await controller.getAllWithDeleted();
         res.render('products', {products});
     }
 
@@ -69,11 +70,53 @@ class ProductController {
             id
         } = req.params;
         const p = await controller.getById(id);
-        await controller.delete(id).then(function () {
-            res.redirect('/products');
+        await controller.delete(id).then(async () => {
+            await controller.change(id, enumStatusProduct.deleted)
+            .then(()=>{
+                res.redirect('/products');
+            })
+            .catch(error => res.json(error));
         }).catch(error => res.json({
             message: String(error)
         }));
+    }
+
+    async restore(req, res, next) {
+        const {
+            id
+        } = req.params;
+        const p = await controller.getById(id);
+        await controller.restore(id).then(async () => {
+            await controller.change(id, enumStatusProduct.selling)
+            .then(()=>{
+                res.redirect('/products');
+            })
+            .catch(error => res.json(error));
+        }).catch(error => res.json({
+            message: String(error)
+        }));
+    }
+
+    async sellout(req, res, next) {
+        const {
+            id
+        } = req.params;
+        await controller.change(id, enumStatusProduct.outOfStock)
+        .then(()=>{
+            res.redirect('/products');
+        })
+        .catch(error => res.json(error));
+    }
+
+    async selling(req, res, next) {
+        const {
+            id
+        } = req.params;
+        await controller.change(id, enumStatusProduct.selling)
+        .then(()=>{
+            res.redirect('/products');
+        })
+        .catch(error => res.json(error));
     }
 
     async update(req, res, next) {

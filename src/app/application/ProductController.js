@@ -12,8 +12,12 @@ class ProductController {
     products = products.map(async (item) => {
       console.log("_id: ", item._id);
       const minItem = await findMin(item._id);
-      item.price = minItem.price;
-      item.size = minItem.size_symbol;
+      if(minItem){
+        item.price = minItem.price;
+        item.size = minItem.size_symbol;
+      } else {
+        item.price = 0; 
+      }
       console.log("item after: ", item);
       return item;
     });
@@ -248,6 +252,30 @@ class ProductController {
       .catch((error) => {
         res.json(error);
       });
+  }
+
+  async search(req, res, text) {
+    const {id} = req.params;
+    // const {name} = req.body;
+    let products = await controller.search(req.query.text);
+    products = products.map(async (item) => {
+      console.log("_id: ", item._id);
+      const minItem = await findMin(item._id);
+      if(minItem){
+        item.price = minItem.price;
+        item.size = minItem.size_symbol;
+      } else {
+        item.price = 0; 
+      }
+      console.log("item after: ", item);
+      return item;
+    });
+    Promise.all(products).then((result) => {
+      result = result.filter((item) => {
+        return item.price > 0;
+      });
+      res.json(result);
+    });
   }
 }
 

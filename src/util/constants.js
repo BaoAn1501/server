@@ -11,7 +11,7 @@ const enumStatusProduct ={
     nameEng: 'Out of stock',
     code: 2,
   },
-  comingSoon:{
+  deleted:{
     name: 'Đã xóa',
     nameEng: 'Deleted',
     code: 3,

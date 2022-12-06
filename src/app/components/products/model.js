@@ -1,3 +1,4 @@
+const { text } = require('body-parser');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
@@ -11,7 +12,7 @@ const productSchema = new Schema({
     name: {
         type: String,
         maxLength: 50,
-        required: true
+        required: true,
     },
     image1: {
         type: String
@@ -41,7 +42,7 @@ const productSchema = new Schema({
 });
 productSchema.plugin(mongooseDelete, {
     deletedAt: true,
-    overrideMethods: 'all'
+    overrideMethods: ['all','find','findOne']
 });
 
 productSchema.set('timestamps', true);

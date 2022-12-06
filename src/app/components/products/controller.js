@@ -4,34 +4,28 @@ exports.getAll = async () => {
     let data = await productService.getAll();
     data = data.map(item => {
         item = {
-            _id: item._id,
-            name: item.name,
-            description: item.description,
-            image1: item.image1,
-            image2: item.image2,
-            image3: item.image3,
-            status: item.status.name,
-            rating: item.rating,
-            category_id: item.category_id
+            ...item?._doc,
         }
         return item;
     });
-    console.log('lấy tất cả sản phẩm controller: ', data);
+    return data;
+}
+
+exports.getAllWithDeleted = async () => {
+    let data = await productService.getAllWithDeleted();
+    data = data.map(item => {
+        item = {
+            ...item?._doc,
+        }
+        return item;
+    });
     return data;
 }
 
 exports.getById = async (id) => {
     let product = await productService.getById(id);
     product = {
-        _id: product._id,
-        name: product.name,
-        image1: product.image1,
-        image2: product.image2,
-        image3: product.image3,
-        status: product.status,
-        rating: product.rating,
-        description: product.description,
-        category: product.category_id.name
+        ...product?._doc
     }
     return product;
 }
@@ -51,6 +45,10 @@ exports.delete = async (id) => {
     return await productService.delete(id);
 }
 
+exports.restore = async (id) => {
+    return await productService.restore(id);
+}
+
 exports.update = async (id, product) => {
     const data = await productService.getAll();
     const isExisted = data.some(p => {
@@ -60,4 +58,19 @@ exports.update = async (id, product) => {
         return null;
     }
     return await productService.update(id, product);
+}
+
+exports.change = async (id, status) => {
+    return await productService.change(id, status);
+}
+
+exports.search = async (text) => {
+    let data = await productService.search(text);
+    data = data.map(item => {
+        item = {
+            ...item?._doc
+        }
+        return item;
+    });
+    return data;
 }

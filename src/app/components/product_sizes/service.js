@@ -3,7 +3,7 @@ const sizeService = require('../sizes/service');
 
 exports.getAll = async (id) => {
     return await productSizeModel.find({
-        product_id: id
+        product_id: id,
     }).populate(['size_id', 'product_id']).sort( {size_id: 1});
 }
 

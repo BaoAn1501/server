@@ -1,0 +1,45 @@
+<canvas class="my-4 w-100" id="myChart" height="380"></canvas>
+
+<script>
+    // Graph
+var ctx = document.getElementById("myChart");
+
+var myChart = new Chart(ctx, {
+  type: "line",
+  data: {
+    labels: [
+      "Thứ hai",
+      "Thứ ba",
+      "Thứ tư",
+      "Thứ năm",
+      "Thứ sáu",
+      "Thứ bảy",
+      "Chủ nhật",
+    ],
+    datasets: [
+      {
+        data: [15, 27, 12, 29, 36, 47, 43],
+        lineTension: 0,
+        backgroundColor: "transparent",
+        borderColor: "#007bff",
+        borderWidth: 4,
+        pointBackgroundColor: "#007bff",
+      },
+    ],
+  },
+  options: {
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: false,
+          },
+        },
+      ],
+    },
+    legend: {
+      display: false,
+    },
+  },
+});
+</script>

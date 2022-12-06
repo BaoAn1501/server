@@ -1,106 +1,184 @@
-<form class="mt-4" name="container-form" method="GET" action="/product/handle-form-action">
-    <div>
-      <h3>Quản lý Sản phẩm</h3>
-    </div>
-    <button type="button" class="btn btn-primary" onclick="location.href='/products/create'">Thêm sản phẩm</button>
-    <table class="table mt-4">
-        <thead>
-            <tr>
-            <th scope="col">STT</th>
-            <th scope="col">
-              Tên
-              {{!-- {{{sortable 'name' _sort}}} --}}
-            </th>
-            <th scope="col">
-              Hình ảnh
-              {{!-- {{{sortable 'level' _sort}}} --}}
-            </th>
-            <th scope="col">
-              Đánh giá
-              {{!-- {{{sortable 'level' _sort}}} --}}
-              </th>
-            <th scope="col">
-              Tình trạng
-              {{!-- {{{sortable 'level' _sort}}} --}}
-            </th>
-            <th scope="col">
-              Actions
-              {{!-- {{{sortable 'createdAt' _sort}}} --}}
-              </th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each products}}
-            <tr>
-            <th scope="row">{{sum @index 1}}</th>
-            <td>{{this.name}}</td>
-            <td>
-                <img src="{{this.image1}}" width="100" height="100" />
-            </td>
-            <td>{{this.rating}}</td>
-            <td>{{this.status}}</td>
-            <td>
-              <div class="dropdown">
-                <a class="btn btn-link dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Tùy chọn
-                </a>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenu">
-                  <a href="/products/{{this._id}}/edit" class="btn btn-link dropdown-item">Sửa</a>
-                  <a href="/products/{{this._id}}/size" class="btn btn-link dropdown-item">Tùy chỉnh giá</a>
-                  <a href="" class="btn btn-link dropdown-item" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-product-modal">Xoá</a>
-                </div>
-              </div>
-            </td>
-            </tr>
-            {{else}}
-            <tr>
-              <td colspan="6">
-                Bạn chưa có sản phẩm nào trong danh sách
-                <a href="/products/create">Tạo sản phẩm</a>
-                </td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+<form
+  class="mt-4"
+  name="container-form"
+  method="GET"
+  action="/product/handle-form-action"
+>
+  <div>
+    <h3>Quản lý Sản phẩm</h3>
+  </div>
+  <button
+    type="button"
+    class="btn btn-primary"
+    onclick="location.href='/products/create'"
+  >Thêm sản phẩm</button>
+  <table class="table mt-4">
+    <thead>
+      <tr>
+        <th scope="col">STT</th>
+        <th scope="col">
+          Tên
+          {{!-- {{{sortable 'name' _sort}}} --}}
+        </th>
+        <th scope="col">
+          Hình ảnh
+          {{!-- {{{sortable 'level' _sort}}} --}}
+        </th>
+        <th scope="col">
+          Đánh giá
+          {{!-- {{{sortable 'level' _sort}}} --}}
+        </th>
+        <th scope="col">
+          Tình trạng
+          {{!-- {{{sortable 'level' _sort}}} --}}
+        </th>
+        <th scope="col" colspan="3">
+          Actions
+          {{!-- {{{sortable 'createdAt' _sort}}} --}}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each products}}
+        <tr>
+          <th scope="row">{{sum @index 1}}</th>
+          <td>{{this.name}}</td>
+          <td>
+            <img src="{{this.image1}}" width="100" height="100" />
+          </td>
+          <td>{{this.rating}}</td>
+          <td style="color: {{productColors this.status.code}}">{{this.status.name}}</td>
+          <td>
+            <table class="table table-borderless">
+              <tbody>
+                <tr>
+                  <td>
+                    <a href="" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-product-modal" style="width: 100px; font-weight: bold; {{deleteProductButton this.status.code}}" type="button" class="btn btn-outline-danger">Xóa</a>
+                  </td>
+                  <td>
+                    <a href="" id="restore-button" data-id="{{this._id}}" style="width: 120px; font-weight: bold; {{restoreProductButton this.status.code}}" type="button" class="btn btn-outline-success">Khôi phục</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <a href="" id="sellout-button" data-id="{{this._id}}" style="width: 100px; font-weight: bold; {{sellOutProductButton this.status.code}}" type="button" class="btn btn-outline-danger">Hết hàng</a>
+                  </td>
+                  <td>
+                    <a href="" id="selling-button" data-id="{{this._id}}" style="width: 120px; font-weight: bold; {{sellingProductButton this.status.code}}" type="button" class="btn btn-outline-success">Còn hàng</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <a href="/products/{{this._id}}/edit" style="width: 100px; font-weight: bold; {{deleteProductButton this.status.code}}" type="button" class="btn btn-outline-primary">Sửa</a>
+                  </td>
+                  <td>
+                    <a href="/products/{{this._id}}/size" style="width: 120px; font-weight: bold; {{deleteProductButton this.status.code}}" type="button" class="btn btn-outline-warning">Chỉnh giá</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      {{else}}
+        <tr>
+          <td colspan="6">
+            Bạn chưa có sản phẩm nào trong danh sách
+            <a href="/products/create">Tạo sản phẩm</a>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 </form>
 
-{{!-- Confirm delete modal --}}
+{{! Confirm delete modal }}
 <div id="delete-product-modal" class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Xoá sản phẩm</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>Sản phẩm sau khi xóa sẽ được thêm vào giỏ rác. Bạn có muốn tiếp tục xóa không ?</p>
+        <p>Sản phẩm sau khi xóa sẽ được thêm vào giỏ rác. Bạn có muốn tiếp tục
+          xóa không ?</p>
       </div>
       <div class="modal-footer">
-        <button id="btn-delete-product" type="button" class="btn btn-danger">Xoá</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+        <button
+          id="btn-delete-product"
+          type="button"
+          class="btn btn-danger"
+        >Xoá</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-dismiss="modal"
+        >Huỷ</button>
       </div>
     </div>
   </div>
 </div>
+
 <form name="delete-product-form" method="POST"></form>
+<form name="change-product-form" method="POST"></form>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function(){
-    var productId;
-    $('#delete-product-modal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        productId = button.data('id') // Extract info from data-* attributes
-        var formDelete = document.forms['delete-product-form'];
-        var btnDelete = document.getElementById('btn-delete-product');
-        console.log(formDelete, 'form del');
-        console.log(productId, 'btn del');
-        btnDelete.onclick = function(){
-          console.log(productId);
-          formDelete.action = '/products/' + productId + '/delete?_method=DELETE';
-          formDelete.submit();
-        }
-    });
+  document.addEventListener('DOMContentLoaded', function(){ 
+    $('#delete-product-modal').on('show.bs.modal', function (event) { 
+      var button = $(event.relatedTarget) // Button that triggered the modal 
+      var productId = button.data('id')
+      var formDelete = document.forms['delete-product-form']; 
+      var btnDelete =  document.getElementById('btn-delete-product'); 
+      btnDelete.onclick = function(){
+        formDelete.action = '/products/' + productId + '/delete?_method=DELETE'; 
+        formDelete.submit(); 
+      } 
+    }); 
   });
+
+  var restoreButton = document.querySelectorAll('#restore-button');
+  for ( var i = 0; i < restoreButton.length; i++ ) (
+    function(i){ 
+    restoreButton[i].onclick = function(e) {
+      e.preventDefault();
+      var _id = $(this).data("id");
+      var restoreForm = document.forms['change-product-form'];
+      restoreForm.action = '/products/' + _id + '/restore?_method=PATCH';
+      restoreForm.submit();
+    }
+  })(i);
+
+  var selloutButton = document.querySelectorAll('#sellout-button');
+  console.log(selloutButton);
+  for ( var i = 0; i < selloutButton.length; i++ ) (
+    function(i){ 
+    selloutButton[i].onclick = function(e) {
+      e.preventDefault();
+      var _id = $(this).data("id");
+      var selloutForm = document.forms['change-product-form'];
+      selloutForm.action = '/products/' + _id + '/sell/out?_method=PATCH';
+      selloutForm.submit();
+    }
+  })(i);
+
+  var sellingButton = document.querySelectorAll('#selling-button');
+  console.log(sellingButton);
+  for ( var i = 0; i < sellingButton.length; i++ ) (
+    function(i){ 
+    sellingButton[i].onclick = function(e) {
+      e.preventDefault();
+      var _id = $(this).data("id");
+      var sellingForm = document.forms['change-product-form'];
+      sellingForm.action = '/products/' + _id + '/sell/in?_method=PATCH';
+      sellingForm.submit();
+    }
+  })(i);
+
 </script>

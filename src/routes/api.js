@@ -37,6 +37,10 @@ router.post('/users/:id/reviews/yet/:_id/rate', productController.rate);
 router.get('/users/:id/reviews/yet', productController.getByUserYet);
 router.get('/users/:id/reviews/already', productController.getByUserAl);
 router.post('/users/:id/changeName', userController.change);
+router.post('/users/:id/search/list/create', userController.saveSearch);
+router.post('/users/:id/search/list/:_id/delete', userController.deleteSearch);
+router.get('/users/:id/search/list', userController.showSearch);
+router.post('/users/:id/search', productController.search);
 router.get('/users/:id', userController.one);
 // router.post('/orders/create', orderController.create);
 

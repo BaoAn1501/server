@@ -37,7 +37,7 @@
             <td style="color: {{colors this.status.code}}">{{this.status.name}}</td>
             <td>{{convert this.updatedAt}}</td>
             <td>
-              <a href="/orders/{{this._id}}">Xử lý</a>
+              <a href="/orders/{{this._id}}">{{orderButton this.status.code}}</a>
             </td>
             </tr>
             {{/each}}

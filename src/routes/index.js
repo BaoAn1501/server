@@ -5,9 +5,11 @@ const productRouter = require('./product');
 const sizeRouter = require('./size');
 const apiRouter = require('./api');
 const orderRouter = require('./order');
+const analysisRouter = require('./analysis');
 
 function route(app) {
-    app.use('/categories', categoryRouter); // Loại
+    app.use('/analysis', analysisRouter);
+    app.use('/categories', categoryRouter);
     app.use('/products', productRouter);
     app.use('/sizes', sizeRouter);
     app.use('/users', userRouter);

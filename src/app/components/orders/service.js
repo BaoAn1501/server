@@ -1,7 +1,13 @@
 const orderModel = require('./model')
+const {enumStatusOrder} = require('../../../util/constants');
 
 exports.getAll = async () => {
     const o =  await orderModel.find().populate(['userAddress_id']).sort({updatedAt: -1});
+    return o;
+}
+
+exports.getInDay = async (begin, end) => {
+    const o = await orderModel.find({updatedAt: {$gte: begin, $lt: end}, status: enumStatusOrder.processed });
     return o;
 }
 

@@ -21,9 +21,15 @@ app.engine('hbs', engine({
     sum: (a, b) => a + b,
     code: (str) => String(str).slice(0, 6) + '***' + String(str).slice(-4), 
     checkout: (number) => (number == 1) ? 'Tiền mặt' : 'Ví điện tử',
+    deleteProductButton: (code) => (code==3) ? 'display: none' : '',
+    restoreProductButton: (code) => (code==3) ? '' : 'display: none',
+    sellOutProductButton: (code) => (code==3 || code==2) ? 'display: none' : '',
+    sellingProductButton: (code) => (code==2) ? '' : 'display: none',
     buttons: (code) => (code==1) ? '' : 'display: none',
+    orderButton: (code) => (code==1) ? 'Xử lý' : 'Xem',
     convert: (date) => String(date).slice(0, 24),
     colors: (number) => (number == 1) ? 'blue' : ( number == 2 ? 'green' : 'red'), 
+    productColors: (number) => (number == 1) ? 'green' : ( number == 2 ? 'black' : 'red'), 
     sortable: (field, sort) => {
       const sortType = field === sort.column ? sort.type : 'default';
       const icons = {

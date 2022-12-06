@@ -21,6 +21,9 @@ router.get('/:id/edit', [authentication.checkLogin], productController.one);
 router.post('/:id/size', [authentication.checkLogin], productSizeController.update);
 router.get('/:id/size', productSizeController.index);
 router.get('/:id/product-size', productSizeController.sizes);
+router.patch('/:id/sell/out', [authentication.checkLogin], productController.sellout);
+router.patch('/:id/sell/in', [authentication.checkLogin], productController.selling);
+router.patch('/:id/restore', [authentication.checkLogin], productController.restore);
 router.delete('/:id/delete', [authentication.checkLogin], productController.delete);
 router.post('/:id/edit', [upload.fields([{
     name: 'image1',

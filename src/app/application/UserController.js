@@ -1,5 +1,8 @@
 const controller = require('../components/users/controller');
-const addressController = require('../components/user_address/controller')
+const addressController = require('../components/user_address/controller');
+const searchController = require('../components/search_key/controller');
+
+
 class UserController {
     // [GET] /api/users/:id
     async one(req, res, next) {
@@ -206,6 +209,39 @@ class UserController {
         } else {
             res.json({});
         }
+    }
+
+    async saveSearch (req, res, next) {
+        const {id} = req.params;
+        // req.query.text
+        const model = {
+            user_id: id,
+            value: req.query.text }
+        const all = await searchController.show(id);
+        const result = all.some(item => {
+            return String(item.value) === String(model.value);
+        });
+        if(!result){
+            const result1 = await searchController.insert(model);
+            res.json({message: 'create new key'});
+        } else {
+            res.json({message: 'key existed'});
+        }
+        
+    }
+
+    async deleteSearch (req, res, next) {
+        const {id, _id} = req.params;
+        await searchController.delete(_id);
+    }
+
+    async showSearch (req, res, next) {
+        const {id} = req.params;
+        await searchController.show(id)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => res.json(error));
     }
     
     
