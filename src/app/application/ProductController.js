@@ -12,11 +12,24 @@ class ProductController {
     products = products.map(async (item) => {
       console.log("_id: ", item._id);
       const minItem = await findMin(item._id);
+      let reviews = await reviewController.getByProduct(item._id);
+      reviews = reviews.filter(item => {
+        return item.score>0;
+      })
+      let total = reviews.reduce((acc, item) => {
+        return acc + item.score;
+      }, 0);
+      let average = total / reviews.length;
       if(minItem){
         item.price = minItem.price;
         item.size = minItem.size_symbol;
       } else {
         item.price = 0; 
+      }
+      if(average > 0){
+        item.rating = average;
+      } else {
+        item.rating = 0;
       }
       console.log("item after: ", item);
       return item;
@@ -205,11 +218,14 @@ class ProductController {
       });
   }
 
-  async getByProduct(req, res, next) {
+  async reviews(req, res, next) {
     const { id } = req.params;
     await reviewController
       .getByProduct(id)
       .then((result) => {
+        result = result.filter(item => {
+          return item.score > 0;
+        });
         res.json(result);
       })
       .catch((error) => res.json(error));

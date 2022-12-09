@@ -16,6 +16,11 @@ exports.getUserAl = async (id) => {
     return reviews;
 }
 
+exports.getInDay = async (begin, end) => {
+    const o = await reviewModel.find({updatedAt: {$gte: begin, $lt: end}, status: true });
+    return o;
+}
+
 exports.insert = async (review) => {
     const r = new reviewModel(review);
     return await r.save();

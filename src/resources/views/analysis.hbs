@@ -1,45 +1,199 @@
-<canvas class="my-4 w-100" id="myChart" height="380"></canvas>
+<div>
+  <h5>Doanh thu trong 7 ngày gần nhất</h5>
+  <div class="d-flex flex-row">
+    <b>Tổng doanh thu: &nbsp;</b>
+    <a style="color: red;" id="total-week"></a>
+  </div>
+  <canvas class="my-4 w-100" id="myChart" height="380"></canvas>
+  <h5>Sản phẩm bán chạy nhất trong ngày</h5>
+  <div class="row form-group">
+    <label for="date" class="col-sm-1 col-form-label">Ngày</label>
+    <div class="col-sm-4">
+      <div class="input-group date" id="datepicker">
+          <input type="text" class="form-control">
+          <span class="input-group-append">
+              <span class="input-group-text bg-white">
+                  <i class="fa fa-calendar"></i>
+              </span>
+          </span>
+      </div>
+    </div>
+  </div>
+  <button type="button" id="find-day" class="btn btn-primary">Tra cứu</button>
+  <canvas id="chart-pie" class="chart-pie-1"></canvas>
+  <h5 id="month">Sản phẩm tốt nhất tháng</h5>
+  <canvas id="myReviewChart"></canvas>
+</div>
 
 <script>
     // Graph
-var ctx = document.getElementById("myChart");
+  var ctx = document.getElementById("myChart");
 
-var myChart = new Chart(ctx, {
-  type: "line",
-  data: {
-    labels: [
-      "Thứ hai",
-      "Thứ ba",
-      "Thứ tư",
-      "Thứ năm",
-      "Thứ sáu",
-      "Thứ bảy",
-      "Chủ nhật",
-    ],
-    datasets: [
-      {
-        data: [15, 27, 12, 29, 36, 47, 43],
-        lineTension: 0,
-        backgroundColor: "transparent",
-        borderColor: "#007bff",
-        borderWidth: 4,
-        pointBackgroundColor: "#007bff",
-      },
-    ],
-  },
-  options: {
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: false,
+  var myData;
+  function getData() {
+    return fetch('http://localhost:3000/analysis/get7days/get')
+      .then(response => response.json())
+      .then(data => {
+        return data;
+    })
+  };
+
+  function getDataDay(date) {
+    return fetch(`http://localhost:3000/analysis/day/${date}/products/get`)
+      .then(response => response.json())
+      .then(data => {
+        return data
+    })
+  };
+
+  function getReviewsData() {
+    return fetch(`http://localhost:3000/analysis/month/rates/get`)
+      .then(response => response.json())
+      .then(data => {
+        return data
+    })
+  };
+
+  var myProductListByDay = null;
+
+  async function RunGetDate() {
+    myData = await getData()
+    console.log(myData);
+    var dateList = myData.map(item => {
+      return item.date.slice(0, 10);
+    })
+    var totalList = myData.map(item => {
+      return item.total;
+    })
+    var getTotal = myData.reduce((acc, item)=>{
+      return acc+item.total;
+    }, 0);
+    $('#total-week').text(getTotal + " đ");
+    dateList = dateList.reverse();
+    totalList = totalList.reverse();
+    console.log('date list: ', dateList);
+    var myChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: dateList,
+        datasets: [
+          {
+            data: totalList,
+            lineTension: 0,
+            backgroundColor: "transparent",
+            borderColor: "#007bff",
+            borderWidth: 4,
+            pointBackgroundColor: "red",
           },
+        ],
+      },
+      options: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: false,
+              },
+            },
+          ],
         },
-      ],
-    },
-    legend: {
-      display: false,
-    },
-  },
-});
+        legend: {
+          display: false,
+          
+        },
+      },
+    });
+  };
+
+  RunGetDate();
+
+  async function RunGetProductInDay(date) {
+      myProductListByDay = await getDataDay(date);
+      var nameList = [];
+      var quantityList = [];
+      if(myProductListByDay.length>0){
+        nameList = myProductListByDay.map(item => {
+          return item.product.name;
+        })
+        quantityList = myProductListByDay.map(item => {
+          return item.quantity;
+        });
+      } else {
+        nameList=["không tìm thấy dữ liệu"];
+        quantityList=[1]
+      }
+    
+      var colorList = ["red","orange","yellow","green","blue","indigo","violet","silver","cyan","purple","lime","magenta","pink","aquamarine","brown","olive"];
+      // Shuffle array
+      var shuffled = colorList.sort(() => 0.5 - Math.random());
+      // Get sub-array of first n elements after shuffled
+      var selected = shuffled.slice(0, myProductListByDay.length);
+      const dataPie1 = {
+        type: "pie",
+        
+        data: {
+          labels: nameList,
+          datasets: [{
+            data: quantityList,
+            backgroundColor: selected,
+          }, ],
+        },
+      };
+      var MyPie1 = new Chart(document.getElementsByClassName("chart-pie-1"), dataPie1);
+    }
+
+  $(function() {
+      //$('#datepicker').datepicker("setDate", new Date()).(dateFormat: 'mm-dd-yyyy');
+      $("#datepicker").datepicker({ dateFormat: 'mm-dd-yyyy'}).datepicker("setDate", new Date());
+      var picked =  $("#datepicker").datepicker('getDate');
+      RunGetProductInDay(picked);
+  });
+
+  $('#find-day').click( ()=>{
+    var picked = $("#datepicker").datepicker('getDate');
+    RunGetProductInDay(picked);
+  });
+
+  async function RunGetReviews() {
+    var ctx = document.getElementById("myReviewChart").getContext('2d');
+    var data = await getReviewsData();
+    console.log('data: ', data);
+    var nameList = data.map(item => {
+      return item.product_id.name;
+    })
+    var scoreList = data.map(item => {
+      return item.score;
+    })
+    var colorList = ["red","orange","yellow","green","blue","indigo","violet","silver","cyan","purple","lime","magenta","pink","aquamarine","brown","olive"];
+    // Shuffle array
+    var shuffled = colorList.sort(() => 0.5 - Math.random());
+    // Get sub-array of first n elements after shuffled
+    var selected = shuffled.slice(0, data.length);
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: nameList,
+        datasets: [{
+          label: '# of Score',
+          data: scoreList,
+          backgroundColor: selected,
+          borderColor: selected,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+  }
+
+  RunGetReviews();
+
+    
 </script>

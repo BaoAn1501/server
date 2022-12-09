@@ -11,6 +11,17 @@ exports.getByProduct = async (id) => {
     return data;
 }
 
+exports.getInDay = async (begin, end) => {
+    let data = await reviewService.getInDay(begin, end);
+    data = data.map(item => {
+        item = {
+            ...item?._doc,
+        }
+        return item;
+    });
+    return data;
+}
+
 exports.getByUserYet = async (id) => {
     let data = await reviewService.getUserYet(id);
     console.log('data reviews yet: ', data);

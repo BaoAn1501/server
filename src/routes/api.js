@@ -10,6 +10,7 @@ router.get('/categories/:id', categoryController.one);
 router.get('/categories', categoryController.index);
 router.post('/products/:id/:slug/save', productController.saveCart);
 router.get('/products/:id/:slug', productController.oneSlug);
+router.get('/products/:id/reviews/all', productController.reviews);
 router.get('/products/:id', productController.one);
 router.get('/products', productController.index);
 
