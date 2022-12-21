@@ -19,8 +19,18 @@ app.engine('hbs', engine({
   extname: '.hbs',
   helpers: {
     sum: (a, b) => a + b,
+    getImage: (images) => { return images[0] },
     code: (str) => String(str).slice(0, 6) + '***' + String(str).slice(-4), 
     checkout: (number) => (number == 1) ? 'Tiền mặt' : 'Ví điện tử',
+    role: (role) => (role == true) ? 'Quản lý' : 'Nhân viên',
+    opm: (email) => (email != 'admin@gmail.com') ? 'display: none' : '',
+    online: (status) => {
+      if(status==true){
+        return `<div class="d-flex flex-row align-items-center"><i class="fas fa-circle" style="color: green; margin-right: 3px"></i><b>Offline</b></div>`;
+      } else {
+        return `<div class="d-flex flex-row align-items-center"><i class="fas fa-circle" style="color: red; margin-right: 3px"></i><b>Offline</b></div>`;
+      }
+    },
     deleteProductButton: (code) => (code==3) ? 'display: none' : '',
     restoreProductButton: (code) => (code==3) ? '' : 'display: none',
     sellOutProductButton: (code) => (code==3 || code==2) ? 'display: none' : '',

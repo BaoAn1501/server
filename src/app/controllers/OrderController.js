@@ -12,16 +12,24 @@ class OrderController {
 
     // [GET] /
     async index(req, res, next) {
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
         const orders = await controller.getAll();
-        res.render('orders', {orders});
+        res.render('orders', {orders, user});
     }
 
     async one(req, res, next) {
         const {
             id
         } = req.params;
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
         const order = await controller.getById(id);
-        const user = await userController.getById(order.userAddress_id.user_id);
+        const _user = await userController.getById(order.userAddress_id.user_id);
         const address = await addressController.getById(order.userAddress_id._id);
         const orderItem = await orderItemController.getAll(id);
         const list = orderItem.map(async (item) => {
@@ -41,7 +49,7 @@ class OrderController {
             return item;
         })
         Promise.all(list).then((list) => {
-            res.render('order_detail', {order, user, address, list});
+            res.render('order_detail', {order, _user, address, list, user});
         });
     }
 

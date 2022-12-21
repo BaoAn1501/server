@@ -11,17 +11,13 @@ exports.getAll = async () => {
         }
         return item;
     });
-    console.log('lay tat ca loai / controller: ', data);
     return data;
 }
 
 exports.getById = async (id) => {
     let category = await categoryService.getById(id);
     category = {
-        _id: category._id,
-        name: category.name,
-        description: category.description,
-        image: category.image,
+        ...category?._doc
     }
     return category;
 }
@@ -29,9 +25,10 @@ exports.getById = async (id) => {
 exports.insert = async (body) => {
     const data = await categoryService.getAll();
     const isExisted = data.some(category => {
-        return category.name == body.name;
+        return category.name.toLowerCase() == body.name.toLowerCase();
     })
     if (isExisted) {
+        console.log('existed');
         return null;
     }
     return await categoryService.insert(body);
@@ -44,9 +41,10 @@ exports.delete = async (id) => {
 exports.update = async (id, category) => {
     const data = await categoryService.getAll();
     const isExisted = data.some(cat => {
-        return cat._id != id && cat.name == category.name;
+        return cat._id != id && cat.name.toLowerCase() == category.name.toLowerCase();
     })
     if (isExisted) {
+        console.log('existed category');
         return null;
     }
     return await categoryService.update(id, category);

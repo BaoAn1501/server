@@ -42,6 +42,7 @@ router.post('/users/:id/search/list/create', userController.saveSearch);
 router.post('/users/:id/search/list/:_id/delete', userController.deleteSearch);
 router.get('/users/:id/search/list', userController.showSearch);
 router.post('/users/:id/search', productController.search);
+router.get('/users/:id/logout', userController.logout);
 router.get('/users/:id', userController.one);
 // router.post('/orders/create', orderController.create);
 

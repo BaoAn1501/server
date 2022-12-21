@@ -33,7 +33,7 @@ exports.getById = async (id) => {
 exports.insert = async (body) => {
     const data = await sizeService.getAll();
     const isExisted = data.some((size) => {
-        return size.symbol == body.symbol || size.value == body.value;
+        return size.symbol.toLowerCase() == body.symbol.toLowerCase() || size.value.toLowerCase() == body.value.toLowerCase();
     });
     console.log(isExisted);
     if (isExisted) {
@@ -49,7 +49,7 @@ exports.delete = async (id) => {
 exports.update = async (id, size) => {
     const data = await sizeService.getAll();
     const isExisted = data.some(siz => {
-        return siz._id != id && (siz.symbol == size.symbol || siz.value == size.value);
+        return siz._id != id && (siz.symbol.toLowerCase() == size.symbol.toLowerCase() || siz.value.toLowerCase() == size.value.toLowerCase());
     })
     if (isExisted) {
         return null;

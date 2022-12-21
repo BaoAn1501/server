@@ -33,7 +33,7 @@ exports.getById = async (id) => {
 exports.insert = async (body) => {
     const data = await productService.getAll();
     const isExisted = data.some(product => {
-        return product.name == body.name;
+        return product.name.toLowerCase() == body.name.toLowerCase();
     })
     if (isExisted) {
         return null;
@@ -52,7 +52,7 @@ exports.restore = async (id) => {
 exports.update = async (id, product) => {
     const data = await productService.getAll();
     const isExisted = data.some(p => {
-        return p._id != id && p.name == product.name;
+        return p._id != id && p.name.toLowerCase() == product.name.toLowerCase();
     })
     if (isExisted) {
         return null;

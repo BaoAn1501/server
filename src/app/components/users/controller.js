@@ -24,6 +24,12 @@ exports.register = async (full_name, email, password) => {
     if (user)
         return 1;
     const users = await userService.getAll();
+    const checkName  = users.some(item => {
+        return item.full_name == full_name;
+    })
+    if(checkName==true){
+        return 2;
+    }
     const hash = await bcrypt.hash(password, await bcrypt.genSalt(10));
     user = await userService.register(full_name, email, hash);
     return {

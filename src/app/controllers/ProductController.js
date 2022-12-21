@@ -8,31 +8,44 @@ const { enumStatusProduct } = require('../../util/constants');
 class ProductController {
     // [GET] /
     async index(req, res, next) {
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
         const products = await controller.getAllWithDeleted();
-        res.render('products', {products});
+        res.render('products', {products, user});
     }
 
     async create(req, res, next){
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
         const categories = await categoryController.getAll();
-        res.render('product_insert', {categories});
+        res.render('product_insert', {categories, user});
     }
 
     async insert(req, res, next) {
-        let image1 = '',
-            image2 = '',
-            image3 = '';
+        let images = [];
         let {
             body,
+            files
         } = req;
-        image1 = uploadNewImage(req.files.image1);
-        image2 = uploadNewImage(req.files.image2);
-        image3 = uploadNewImage(req.files.image3);
+        console.log('body: ', body);
+        console.log('files: ', files);
+        if(files){
+            for(var i=0;i<files.length; i++){
+                images.push(`http://localhost:3000/img/${files[i].filename}`);
+            }
+        }
         body = {
             ...body,
-            image1,
-            image2,
-            image3
+            images: images
         };
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
         await controller.insert(body).then(async function(result){
             if(result){
                 const sizes = await sizeController.getAll();
@@ -44,25 +57,52 @@ class ProductController {
                     }
                     await productSizeController.insert(object);    
                 })
-                res.redirect('/products');
+                res.json({
+                    message: "Thêm sản phẩm thành công",
+                    status: true,
+                })
             } else {
                 res.json({
-                    message: "Thêm sản phẩm thất bại"
+                    message: "Tên sản phẩm này đã có. Vui lòng nhập tên khác",
+                    status: false,
                 });
-                removeImageFromPath(image1);
-                removeImageFromPath(image2);
-                removeImageFromPath(image3);
             }
-        });
+        }).catch(error => res.json({message: 'Lỗi' + error}));
     }
 
     async one(req, res, next) {
         const {
             id
         } = req.params;
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
         const product = await controller.getById(id);
         const categories = await categoryController.getAll();
-        res.render('product_edit', { categories: categories, product: product });
+        res.render('product_edit', { categories: categories, product: product, user });
+    }
+
+    async getCategory(req, res, next) {
+        const {
+            id
+        } = req.params;
+        let user;
+        const product = await controller.getById(id);
+        if(product){
+            res.json(product.category_id);
+        }
+    }
+
+    async getImages(req, res, next) {
+        const {
+            id
+        } = req.params;
+        await controller.getById(id)
+        .then(product => {
+            res.json(product.images);
+        })
+        .catch(next);
     }
 
     async delete(req, res, next) {
@@ -120,85 +160,45 @@ class ProductController {
     }
 
     async update(req, res, next) {
-        let image1 = '',
-            image2 = '',
-            image3 = '';
+        let images = [];
         const {
             id
         } = req.params;
         let {
             body,
+            files
         } = req;
-        const product = await controller.getById(id);
-        const oldImage1 = product.image1;
-        const oldImage2 = product.image2;
-        const oldImage3 = product.image3;
-        // new image if upload
-        image1 = hasUploadFile(req.files.image1, oldImage1);
-        image2 = hasUploadFile(req.files.image2, oldImage2);
-        image3 = hasUploadFile(req.files.image3, oldImage3);
+        if(files){
+            for(var i=0;i<files.length; i++){
+                images.push(`http://localhost:3000/img/${files[i].filename}`);
+            }
+        }
         body = {
             ...body,
-            image1,
-            image2,
-            image3
+            images: images
         };
         await controller.update(id, body).then(function(result){
             if (result) {
-                handleImageWhenSuccess(req.files.image1, oldImage1);
-                handleImageWhenSuccess(req.files.image2, oldImage2);
-                handleImageWhenSuccess(req.files.image3, oldImage3);
-                res.redirect('/products');
-            }
-        }).catch(function(error){
-            if(error){
-                handleImageWhenFail(req.files.image1, image1);
-                handleImageWhenFail(req.files.image2, image2);
-                handleImageWhenFail(req.files.image3, image3);
                 res.json({
-                    message: "Cập nhật sản phẩm thất bại"
-                });
+                    message: "Cập nhật sản phẩm thành công",
+                    status: true,
+                })
+            } else {
+                res.json({
+                    message: "Tên sản phẩm đã tồn tại. Vui lòng đổi tên khác",
+                    status: false,
+                })
             }
-        });
+        }).catch(error => res.json({message: 'Lỗi' + error}));
     }
 }
 
-function removeImageFromPath(image) {
-    if (image.length > 0) {
-        const url = String(image).slice(String(image).search("image"), String(image).length);
-        const path = `./src/public/img/${url}`;
-        fs.unlinkSync(path);
-    }
-}
-
-function hasUploadFile(file, oldImage){
-    let imgUrl = '';
-    if(file){
-        imgUrl = `http://localhost:3000/img/${file[0].filename}`
-    } else {
-        imgUrl = oldImage;
-    }
-    return imgUrl;
-}
-
-function uploadNewImage(image){
-    let imgUrl = '';
-    if(image){
-        imgUrl = `http://localhost:3000/img/${image[0].filename}`
-    }
-    return imgUrl;
-}
-
-function handleImageWhenSuccess(file, oldImage){
-    if(file){
-        removeImageFromPath(oldImage);
-    }
-}
-
-function handleImageWhenFail(file, image){
-    if(file){
-        removeImageFromPath(image);
-    }
-}
+// function removeImageFromPath(image) {
+//     if (image.length > 0) {
+//         const url = String(image).slice(String(image).search("image"), String(image).length);
+//         const path = `./src/public/img/${url}`;
+//         fs.unlinkSync(path);
+//     }
+// }
 
 module.exports = new ProductController();

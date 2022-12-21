@@ -6,15 +6,23 @@ class CategoryController {
 
     // [GET] /
     async index(req, res, next) {
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
         await controller.getAll()
         .then(categories => {
-            res.render('categories', {categories});
+            res.render('categories', {categories, user});
         })
         .catch(next);
     }
 
     async create(req, res, next) {
-        res.render('category_create');
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
+        res.render('category_create', {user});
     }
     // [POST] / 
     async insert(req, res, next) {
@@ -22,24 +30,26 @@ class CategoryController {
         let {
             body,
             file
-        } = req; 
+        } = req;
+        console.log('body: ', body);
+        console.log('files: ', file);
         if (file) {
             image = `http://localhost:3000/img/${file.filename}`;
         }
-        body = {
+        let data = {
             ...body,
-            image
+            image: image,
         };
-        console.log('body: ', body);
-        await controller.insert(body).then(function (result) {
+        console.log('body: ', data);
+        await controller.insert(data).then(function (result) {
             if (result) {
-                res.redirect('/categories');
+                res.json({message: 'Thêm danh mục thành công', status: true})
             } else {
-                res.json({message: 'Tên loại đã tồn tại'})
-                deleteImage(image);
+                console.log('existed insert');
+                res.json({message: 'Tên danh mục đã tồn tại', status: false})
             }
-        }).catch(function(){
-            deleteImage(image);
+        }).catch(function(error){
+            res.json({message: 'Lỗi: ' + error, status: false})
         });
     }
 
@@ -47,9 +57,24 @@ class CategoryController {
         const {
             id
         } = req.params;
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
         await controller.getById(id)
         .then(category => {
-            res.render('category_edit', {category});
+            res.render('category_edit', {category, user});
+        })
+        .catch(next);
+    }
+
+    async getImage(req, res, next) {
+        const {
+            id
+        } = req.params;
+        await controller.getById(id)
+        .then(category => {
+            res.json(category.image);
         })
         .catch(next);
     }
@@ -62,17 +87,14 @@ class CategoryController {
         const c = await controller.getById(id);
         const products = await pController.getAll();
         const inCategory = products.some(product => {
-            console.log(product.category_id._id);
             return product.category_id._id == id;
         });
         console.log('ton tai: ', inCategory);
-        const oldImage = c.image;
         if (inCategory) {
-            res.json('Không thể xóa loại có sản phẩm');
+            res.json({message: 'Không thể xóa danh mục có chứa sản phẩm', status: false});
         } else {
             await controller.delete(id).then(function () {
-                deleteImage(oldImage);
-                res.redirect('/categories');
+                res.json({message: 'Xóa danh mục thành công', status: true});
             }).catch(next);
         }
     }
@@ -86,12 +108,8 @@ class CategoryController {
         const {
             id
         } = req.params;
-        const c = await controller.getById(id);
-        const oldImage = c.image;
         if (file) {
             image = `http://localhost:3000/img/${file.filename}`;
-        } else {
-            image = oldImage;
         }
         body = {
             ...body,
@@ -99,20 +117,12 @@ class CategoryController {
         };
         await controller.update(id, body).then(function (result) {
             if (result) {
-                if (file) {
-                    deleteImage(oldImage);
-                }
-                res.redirect('/categories');
+                res.json({message: 'Cập nhật danh mục thành công', status: true})
             } else {
-                if (file) {
-                    deleteImage(image);
-                }
-                res.json({
-                    message: "Tên loại đã tồn tại"
-                });
+                res.json({message: 'Tên danh mục đã tồn tại', status: false})
             }
-        }).catch(function(){
-            deleteImage(image);
+        }).catch(function(error){
+            res.json({message: 'Lỗi: ' + error, status: false})
         });
     }
 }

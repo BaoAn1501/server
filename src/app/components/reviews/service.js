@@ -17,7 +17,7 @@ exports.getUserAl = async (id) => {
 }
 
 exports.getInDay = async (begin, end) => {
-    const o = await reviewModel.find({updatedAt: {$gte: begin, $lt: end}, status: true });
+    const o = await reviewModel.find({updatedAt: {$gte: begin, $lt: end}, status: true,  });
     return o;
 }
 

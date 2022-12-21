@@ -12,6 +12,19 @@ const adminSchema = new Schema({
     password: {
         type: String
     },
+    full_name: {
+        type: String,
+        required: true
+    },
+    admin: {
+        type: Boolean, 
+        default: true
+    },
+    active: {
+        type: Boolean,
+        default: false
+    }
+
 });
 
 adminSchema.set('timestamps', true);

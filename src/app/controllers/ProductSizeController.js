@@ -8,13 +8,18 @@ class ProductSizeController {
         const {
             id
         } = req.params;
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
         const productSizes = await controller.getAll(id);
         console.log('list: ', productSizes);
         const name = productSizes[0].name;
         res.render('product_size_edit', {
             id,
             name,
-            productSizes
+            productSizes,
+            user
         });
     }
 

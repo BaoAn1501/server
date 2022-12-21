@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
 h2 {
   color: green; }
 
@@ -40,9 +41,95 @@ h2 {
 .card {
   position: relative; }
 
+.home {
+  height: 100%;
+  background-image: url("https://img.freepik.com/free-photo/coffee-beans-top-view-white-background-space-text_176474-5028.jpg?w=2000");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.btn-login {
+  margin-top: 20px;
+  margin-inline: 30px; }
+
 .card-category a {
   line-height: 0.8; }
 
 .card-category a:hover {
   color: red;
   text-decoration: none; }
+
+*, *:before, *:after {
+  box-sizing: border-box; }
+
+.login-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; }
+  .login-container:hover .login-top:before, .login-container:hover .login-top:after, .login-container:hover .login-bottom:before, .login-container:hover .login-bottom:after, .login-container:active .login-top:before, .login-container:active .login-top:after, .login-container:active .login-bottom:before, .login-container:active .login-bottom:after {
+    margin-left: 200px;
+    transform-origin: -200px 50%;
+    transition-delay: 0s; }
+  .login-container:hover .login-center, .login-container:active .login-center {
+    opacity: 1;
+    transition-delay: 0.2s; }
+
+.login-top:before, .login-top:after, .login-bottom:before, .login-bottom:after {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 200vmax;
+  height: 200vmax;
+  top: 50%;
+  left: 50%;
+  margin-top: -100vmax;
+  transform-origin: 0 50%;
+  transition: all 0.5s cubic-bezier(0.445, 0.05, 0, 1);
+  z-index: 10;
+  opacity: 0.65;
+  transition-delay: 0.2s; }
+
+.login-top:before {
+  transform: rotate(45deg);
+  background: #e46569; }
+
+.login-top:after {
+  transform: rotate(135deg);
+  background: #ecaf81; }
+
+.login-bottom:before {
+  transform: rotate(-45deg);
+  background: #60b8d4; }
+
+.login-bottom:after {
+  transform: rotate(-135deg);
+  background: #3745b5; }
+
+.login-center {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top: 50%;
+  left: 50%;
+  margin-left: -200px;
+  margin-top: -200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.445, 0.05, 0, 1);
+  transition-delay: 0s;
+  color: #333; }
+  .login-center input {
+    width: 100%;
+    padding: 15px;
+    margin: 5px;
+    border-radius: 1px;
+    border: 1px solid #ccc;
+    font-family: inherit; }

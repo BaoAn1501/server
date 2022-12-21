@@ -14,14 +14,9 @@ const productSchema = new Schema({
         maxLength: 50,
         required: true,
     },
-    image1: {
-        type: String
-    },
-    image2: {
-        type: String
-    },
-    image3: {
-        type: String
+    images: {
+        type: Array,
+        default: []
     },
     status: {
         type: Object,

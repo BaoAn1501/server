@@ -5,16 +5,22 @@ const jwt = require('jsonwebtoken');
 class SiteController {
     // [GET] /
     index(req, res, next) {
-        res.render('home');
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
+        console.log('user: ', user)
+        res.render('home', {user});
     }
     // [POST] /register/admin
     async registerAd(req, res, next) {
         const {
             email,
             password,
-            confirm_password,
+            full_name,
+            admin
         } = req.body;
-        const result = await adminController.register(email, password);
+        const result = await adminController.register(email, password, full_name, admin);
         if (result == 1) {
             res.json({
                 status: false,
@@ -23,7 +29,7 @@ class SiteController {
         } else if (result == 2) {
             res.json({
                 status: false,
-                message: "Chỉ đăng ký 1 tài khoản admin"
+                message: "Tên đã được đăng ký, mời chọn tên khác"
             });
         } else {
             res.json({
@@ -38,35 +44,35 @@ class SiteController {
             email,
             password
         } = req.body;
+        console.log('email: ', email, 'password: ', password);
         const result = await adminController.login(email, password);
         if (result == 1) {
-            // res.json({
-            //     status: false,
-            //     message: "Email chưa được đăng ký"
-            // });
-            // console.log('login error');
-            res.redirect('/login/admin');
+            res.json({
+                status: false,
+                message: "Email chưa được đăng ký"
+            });
+            // res.redirect('/login/admin');
         } else if (result == 2) {
-            // res.json({
-            //     status: false,
-            //     message: "Sai mật khẩu"
-            // });
-            // console.log('login error');
-            res.redirect('/login/admin');
+            res.json({
+                status: false,
+                message: "Sai mật khẩu"
+            });
+            console.log('login error');
+            // res.redirect('/login/admin');
         } else {
             const token = jwt.sign({
                 _id: result._id,
                 email: result.email
             }, 'myKey');
             req.session.token = token;
-            // res.json({
-            //     status: true,
-            //     message: "Đăng nhập thành công",
-            //     result,
-            //     token
-            // });
-            console.log('login success token: ', token);
-            res.redirect('/');
+            req.session.user = result;
+            res.json({
+                status: true,
+                message: "Đăng nhập thành công",
+                result,
+                token
+            });
+            // res.redirect('/');
         }
     }
     // [POST] /register
@@ -82,6 +88,12 @@ class SiteController {
             res.json({
                 status: false,
                 message: "Email đã được đăng ký trước đó"
+            });
+        } else if (result == 2) {
+            console.log('result: ', result);
+            res.json({
+                status: false,
+                message: "Tên đã được đăng ký trước đó"
             });
         } else {
             console.log('result: ', result);

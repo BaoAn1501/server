@@ -243,6 +243,12 @@ class UserController {
         })
         .catch(error => res.json(error));
     }
+
+    async logout(req, res, next){
+        req.session.destroy(function(error){
+            res.json(error)
+        });
+    }
     
     
 }

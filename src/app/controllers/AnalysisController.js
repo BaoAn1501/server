@@ -6,12 +6,15 @@ const reviewController = require('../components/reviews/controller');
 
 class AnalysisController {
     async index(req, res, next) {
-        res.render('analysis');
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
+        res.render('analysis', {user});
     }
 
     async ratingMonth (req, res, next) {
         const date = new Date();
-        console.log('m: ', date.getMonth()+1);
         let begin = new Date(date.getFullYear(), date.getMonth(), 2);
         let end = new Date(date.getFullYear(), date.getMonth()+1, 1);
         begin = begin.setUTCHours(0,0,0,0);
@@ -51,7 +54,6 @@ class AnalysisController {
     }
 
     async get7Days (req, res, next) {
-        const td = new Date();
         let today = new Date();
         today = today.setUTCHours(23,59,59,999);
         let last = today - (6 * 24 * 60 * 60 * 1000);
@@ -96,6 +98,86 @@ class AnalysisController {
         } )
         .catch(error => res.json(error));
     }
+
+    async get30Days (req, res, next) {
+        const {m} = req.params;
+        const date = new Date();
+        let listDay = getDaysInMonth(m, date.getFullYear());
+        listDay = listDay.map(item => {
+            return {
+                date: new Date(new Date(item.date).setUTCHours(0,0,0,0)),
+                value: 0
+            }
+        })
+        console.log(listDay);
+        let first = listDay[0].date;
+        let end = listDay[listDay.length-1].date;
+        end = end.setUTCHours(23,59,59,999);
+        end = new Date(end);
+        console.log('begin: ', first ,' end: ', end);
+        await orderController.getDay(first, end)
+        .then((result) => {
+            if(result){
+                console.log('list order: ', result);
+                result = result.map(element => {
+                    element = {
+                        date: new Date(new Date(element.updatedAt).setUTCHours(0,0,0,0)),
+                        value: element.total
+                    }
+                    console.log('ele: ', element);
+                    return element;
+                });
+                return result;
+            }
+        })
+        .then((result) => {
+            console.log('ldaf: ', listDay);
+            console.log('rsaf: ',result);
+            let newList = listDay.concat(result);
+            console.log('list order after concat: ', newList);
+            let list = newList.reduce((acc, element)=>{
+                console.log('slice ele: ', new Date(String(element.date).slice(0,10)));
+                if (element.date in acc) {
+                    acc[element.date].value = element.value + acc[element.date].value
+                } else {
+                    acc[element.date] = element;
+                }
+                return acc;
+            }, {});
+            let list1 = Object.values(list);
+            list1 = list1.sort((a, b) => {
+                if (
+                  a.date <
+                  b.date
+                ) {
+                  return -1;
+                } else if (
+                  a.date >
+                  b.date
+                ) {
+                  return 1;
+                }
+        
+              });
+            console.log('list1: ', list1);
+            res.json(list1);
+        } )
+        .catch(error => res.json(error));
+    }
+}
+
+function getDaysInMonth(month, year) {
+    var data = [];
+    console.log(month);
+    let number = new Date(year, month, 0).getDate();
+    console.log(number);
+    for(let i=1; i<=number; i++){
+        data.push({
+            date: new Date(year, month-1, i+1),
+            value: 0
+        })
+    }
+    return data;
 }
 
 async function GetOrderList(begin, end) {
