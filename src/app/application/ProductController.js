@@ -268,6 +268,7 @@ class ProductController {
       .catch((error) => {
         res.json(error);
       });
+    
   }
 
   async search(req, res, text) {

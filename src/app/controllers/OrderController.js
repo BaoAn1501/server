@@ -37,7 +37,7 @@ class OrderController {
             console.log('size: ',s);
             const size = s.symbol;
             const p = await productController.getById(item.productSize_id.product_id);
-            const image = p.image1;
+            const image = p.images[0];
             const name = p.name;
             item = {
                 image: image,

@@ -5,15 +5,16 @@ exports.getAll = async (id) => {
     let data = await addressService.getAll(id);
     data = data.map(address => {
         address = {
-            _id: address._id,
-            address: 'số ' + address.number
-            + ', đường ' + address.street
-            + ', phường ' + address.ward
-            + ', quận ' + address.district
-            + ', ' + address.city,
-            phone_number: address.phone_number,
-            default: address.default,
-            user_id: address.user_id
+            ...address?._doc
+            // _id: address._id,
+            // address: 'số ' + address.number
+            // + ', đường ' + address.street
+            // + ', phường ' + address.ward
+            // + ', quận ' + address.district
+            // + ', ' + address.city,
+            // phone_number: address.phone_number,
+            // default: address.default,
+            // user_id: address.user_id
         }
         return address;
     });
@@ -31,15 +32,16 @@ exports.getById = async (id) => {
 exports.getDefault = async (id) => {
     let address = await addressService.getDefault(id);
     address = {
-        _id: address._id,
-        address: 'số ' + address.number
-        + ', đường ' + address.street
-        + ', phường ' + address.ward
-        + ', quận ' + address.district
-        + ', ' + address.city,
-        phone_number: address.phone_number,
-        default: address.default,
-        user_id: address.user_id
+        ...address?._doc
+        // _id: address._id,
+        // address: 'số ' + address.number
+        // + ', đường ' + address.street
+        // + ', phường ' + address.ward
+        // + ', quận ' + address.district
+        // + ', ' + address.city,
+        // phone_number: address.phone_number,
+        // default: address.default,
+        // user_id: address.user_id
     }
     return address;
 }

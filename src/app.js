@@ -32,6 +32,7 @@ app.engine('hbs', engine({
         return `<div class="d-flex flex-row align-items-center"><i class="fas fa-circle" style="color: red; margin-right: 3px"></i><b>Offline</b></div>`;
       }
     },
+    hideRadio: (email) => (email != 'admin@gmail.com') ? 'hidden' : '',
     deleteProductButton: (code) => (code==3) ? 'display: none' : '',
     restoreProductButton: (code) => (code==3) ? '' : 'display: none',
     sellOutProductButton: (code) => (code==3 || code==2) ? 'display: none' : '',
@@ -50,7 +51,7 @@ app.engine('hbs', engine({
         case 3:
         return 'violet'
 
-        case 1:
+        case 4:
         return 'red'
 
       }

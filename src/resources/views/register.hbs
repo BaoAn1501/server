@@ -425,14 +425,14 @@
                                   </div>
                                 </div>
 
-                                <div class="form-check ml-3">
-                                  <input class="form-check-input" type="radio" name="radio" id="manager" checked/>
+                                <div class="form-check ml-3" {{hideRadio user.email}}>
+                                  <input class="form-check-input" type="radio" name="radio" id="manager" />
                                   <label class="form-check-label" for="flexRadioDefault1">Quản lý</label>
                                 </div>
 
                                 <!-- Default checked radio -->
                                 <div class="form-check ml-3" >
-                                  <input class="form-check-input" type="radio" name="radio" id="staff"/>
+                                  <input class="form-check-input" type="radio" name="radio" id="staff" checked/>
                                   <label class="form-check-label" for="flexRadioDefault2">Nhân viên</label>
                                 </div>
 
@@ -837,6 +837,7 @@
         return result;
       }
     </script>
+
   </body>
 </html>
 
