@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 const db = require('./config/db');
@@ -24,6 +24,7 @@ app.engine('hbs', engine({
     checkout: (number) => (number == 1) ? 'Tiền mặt' : 'Ví điện tử',
     role: (role) => (role == true) ? 'Quản lý' : 'Nhân viên',
     opm: (email) => (email != 'admin@gmail.com') ? 'display: none' : '',
+    manager: (e) => (e != true) ? 'display: none' : '',
     online: (status) => {
       if(status==true){
         return `<div class="d-flex flex-row align-items-center"><i class="fas fa-circle" style="color: green; margin-right: 3px"></i><b>Offline</b></div>`;
@@ -38,7 +39,22 @@ app.engine('hbs', engine({
     buttons: (code) => (code==1) ? '' : 'display: none',
     orderButton: (code) => (code==1) ? 'Xử lý' : 'Xem',
     convert: (date) => String(date).slice(0, 24),
-    colors: (number) => (number == 1) ? 'blue' : ( number == 2 ? 'green' : 'red'), 
+    colors: (number) => {
+      switch(number){
+        case 1:
+        return 'blue'
+
+        case 2:
+        return 'green'
+
+        case 3:
+        return 'violet'
+
+        case 1:
+        return 'red'
+
+      }
+    }, 
     productColors: (number) => (number == 1) ? 'green' : ( number == 2 ? 'black' : 'red'), 
     sortable: (field, sort) => {
       const sortType = field === sort.column ? sort.type : 'default';

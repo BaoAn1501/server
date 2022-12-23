@@ -37,6 +37,17 @@ exports.register = async (full_name, email, password) => {
     };
 }
 
+exports.changePass = async (id, password, newPassword) => {
+    const user = await userService.getById(id);
+    console.log('user: ', user.password);
+    const checkPassword = await bcrypt.compare(password, user.password);
+    if(!checkPassword){
+        return 1;
+    }
+    const hash = await bcrypt.hash(newPassword, await bcrypt.genSalt(10));
+    return await userService.updatePassword(id, hash);
+}
+
 exports.forgot = async (email) => {
     let user = await userService.login(email);
     if(email !== user.email){

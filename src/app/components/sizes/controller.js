@@ -4,10 +4,7 @@ exports.getAll = async () => {
     let data = await sizeService.getAll();
     data = data.map(item => {
         item = {
-            _id: item._id,
-            symbol: item.symbol,
-            value: item.value,
-            slug: item.slug,
+            ...item?._doc
         }
         return item;
     });

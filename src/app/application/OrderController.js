@@ -30,12 +30,21 @@ class OrderController {
         res.json(orders);
     }
 
-    async successList (req, res, next) {
+    async shippingList (req, res, next) {
+        const {id} = req.params;
+        let orders = await orderController.getAll();
+        orders = orders.filter(item => {
+            return String(item.userAddress_id.user_id) === String(id) && item.status.name == enumStatusOrder.shipping.name;
+        });
+        res.json(orders);
+    }
+
+    async takenList (req, res, next) {
         const {id} = req.params;
         let orders = await orderController.getAll();
         console.log('run filter success');
         orders = orders.filter(item => {
-            return String(item.userAddress_id.user_id) === String(id) && item.status.name === enumStatusOrder.processed.name;
+            return String(item.userAddress_id.user_id) === String(id) && item.status.name === enumStatusOrder.taken.name;
         });
         res.json(orders);
     }
@@ -61,7 +70,7 @@ class OrderController {
             const s = await sizeController.getById(item.productSize_id.size_id);
             const size = s.symbol;
             const p = await productController.getById(item.productSize_id.product_id);
-            const image = p.image1;
+            const image = p.images[0];
             const name = p.name;
             item = {
                 image: image,
@@ -123,6 +132,36 @@ class OrderController {
         await orderController.update(ido, enumStatusOrder.canceled)
         .then(()=>{
             res.json({message: 'Đã hủy đơn hàng'});
+        })
+        .catch(error => res.json(error));
+    }
+
+    async receive(req, res, next) {
+        const {id, ido} = req.params;
+        let orderItems = await orderItemController.getAll(ido);
+        let list = [];
+        list = orderItems.filter((item) => {
+            return list.includes(item) ? '' : list.push(item)
+        });
+        console.log('list: ', list);
+        await orderController.update(ido, enumStatusOrder.taken)
+        .then(async (result)=>{
+            const address = await addressController.getById(String(result.userAddress_id));
+            console.log('address: ', address);
+
+            list = list.map(async item => {
+                
+                item = {
+                    product_id : item.productSize_id.product_id,
+                    user_id: address.user_id,
+                    score: 0,
+                }
+                console.log('item review: ', item);
+                await reviewController.insert(item);
+            });
+            Promise.all(list).then(() => {
+                res.json({message: 'Đã thanh toán'});
+            })
         })
         .catch(error => res.json(error));
     }

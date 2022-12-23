@@ -40,12 +40,16 @@ exports.getAll = async () => {
     let data = await adminService.getAll();
     data = data.map(user => {
         user = {
-            full_name: user.full_name,
-            email: user.email,
-            active: user.active,
-            admin: user.admin
+            ...user?._doc
         }
         return user;
     });
     return data;
 }
+
+exports.delete = async (id) => {
+    return await adminService.delete(id);
+}
+
+
+

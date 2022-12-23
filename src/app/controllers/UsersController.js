@@ -33,6 +33,21 @@ class UsersController {
         }
         res.render('register', {user});
     }
+
+    async getCurrentUser(req, res, next){
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
+        res.json(user);
+    }
+
+    async deleteUser(req, res, next) {
+        const {id} = req.params;
+        await adminController.delete(id).then(() => {
+            res.redirect('/users');
+        });
+    }
 }
 
 module.exports = new UsersController();

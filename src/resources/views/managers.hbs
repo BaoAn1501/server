@@ -352,7 +352,7 @@
                 </a>
               </li>
               <li class="nav-item active">
-                <a href="/users" class="collapsed">
+                <a style="{{manager user.admin}}" href="/users" class="collapsed">
                   <i class="fas fa-users"></i>
                   <p>Quản trị viên</p>
                 </a>
@@ -420,6 +420,9 @@
                             <td>{{this.full_name}}</td>
                             <td>{{role this.admin}}</td>
                             <td>{{{online this.active}}}</td>
+                            <td>
+                              <a id="del-text" href="" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-user-modal" style="color: red;">Xoá</a>
+                            </td>
                             <td>
                               <a>{{user.email}}</a>
                               {{!-- <a href="" style="{{opm user.email}}" class="btn btn-link dropdown-item" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-size-modal">Xoá</a> --}}
@@ -746,7 +749,68 @@
       height: '70', width: '100%', lineWidth: '2', lineColor: '#ffa534',
       fillColor: 'rgba(255, 165, 52, .14)' });
     </script>
+    
   </body>
 </html>
+
+{{!-- Confirm delete modal --}}
+<div id="delete-user-modal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xoá tài khoản</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Hành động này không thể hoàn tác. Tài khoản sẽ bị xóa vĩnh viễn. Bạn có muốn tiếp tục xóa không ?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-delete-user" type="button" class="btn btn-danger">Xoá</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+      </div>
+    </div>
+  </div>
+</div>
+<form name="delete-user-form" method="POST"></form>
+
+<script>
+  var delText = $('#del-text');
+  function getCurrentUser(){
+    $.ajax({
+        url: "http://localhost:3000/users/current/get",
+        type: 'GET',
+        dataType: 'json', // added data type
+        success: function(res) {
+          console.log(res);
+            if(res.email != 'admin@gmail.com'){
+              delText.hide();
+            } else {
+              delText.show();
+            }
+        }
+    });
+  }
+  getCurrentUser();
+  document.addEventListener('DOMContentLoaded', function(){
+    $('#delete-user-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        console.log('btn: ', button);
+        var id = button.data('id');
+        console.log('id: ', id);
+        var formDelete = document.forms['delete-user-form'];
+        var btnDelete = document.getElementById('btn-delete-user');
+        btnDelete.onclick = function(){
+          formDelete.action = '/users/' + id + '/delete?_method=DELETE';
+          formDelete.submit();
+        }
+    });
+    
+  });
+</script>
+
+
+
 
 

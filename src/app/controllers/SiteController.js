@@ -109,6 +109,7 @@ class SiteController {
             email,
             password
         } = req.body;
+        console.log('run login');
         const result = await userController.login(email, password);
         if (result == 1) {
             res.json({

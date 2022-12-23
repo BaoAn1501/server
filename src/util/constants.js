@@ -24,15 +24,20 @@ const enumStatusOrder ={
     nameEng: 'Pending',
     code: 1,
   },
-  processed:{
-    name: 'Đã được xử lý',
-    nameEng: 'Processed',
+  shipping:{
+    name: 'Đang giao hàng',
+    nameEng: 'shipping',
     code: 2,
+  },
+  taken:{
+    name: 'Đã nhận hàng',
+    nameEng: 'taken',
+    code: 3,
   },
   canceled: {
     name: 'Đã hủy',
     nameEng: 'Canceled',
-    code: 3,
+    code: 4,
   }
 }
 

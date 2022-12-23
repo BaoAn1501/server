@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const authentication = require('../middleware/authentication');
-const userController = require('../app/controllers/UsersController');
+const adminController = require('../app/controllers/UsersController');
 // users/
-router.get('/register',[authentication.checkLogin], userController.registerView);
-router.get('/',[authentication.checkLogin], userController.index);
+router.get('/current/get',[authentication.checkLogin], adminController.getCurrentUser);
+router.get('/register',[authentication.checkLogin], adminController.registerView);
+router.delete('/:id/delete',[authentication.checkLogin], adminController.deleteUser);
+router.get('/',[authentication.checkLogin], adminController.index);
 
 module.exports = router;

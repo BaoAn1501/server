@@ -55,27 +55,9 @@ class OrderController {
 
     async ok(req, res, next) {
         const {id} = req.params;
-        let orderItems = await orderItemController.getAll(id);
-        orderItems = orderItems.map(item => String(item.productSize_id.product_id));
-        let list = [];
-        list = orderItems.filter((item) => {
-            return list.includes(item) ? '' : list.push(item)
-        });
-        await controller.update(id, enumStatusOrder.processed)
-        .then(async (result)=>{
-            const address = await addressController.getById(String(result.userAddress_id));
-            list = list.map(async item => {
-                item = {
-                    product_id : item,
-                    user_id: address.user_id,
-                    score: 0,
-                }
-                console.log('item review: ', item);
-                await reviewController.insert(item);
-            });
-            Promise.all(list).then(() => {
-                res.redirect('/orders');
-            })
+        await controller.update(id, enumStatusOrder.shipping)
+        .then(()=>{
+            res.redirect('/orders');
         })
         .catch(error => res.json(error));
     }

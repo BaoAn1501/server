@@ -1,7 +1,13 @@
 const controller = require('../components/users/controller');
 const addressController = require('../components/user_address/controller');
 const searchController = require('../components/search_key/controller');
+const userSchema = require('../components/users/model');
+const tokenSchema = require('../components/users/token');
+const sendEmail = require('../../util/sendEmail');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
+const token = require('../components/users/token');
 
 class UserController {
     // [GET] /api/users/:id
@@ -21,7 +27,7 @@ class UserController {
             res.json(error);
         });
     }
-    async change(req, res, next) {
+    async changeName(req, res, next) {
         const { id } = req.params;
         const { full_name } = req.body;
         await controller.update(id, full_name)
@@ -32,6 +38,17 @@ class UserController {
         }).catch(error => {
             res.json('Lỗi: ', error)
         });
+    }
+
+    async changePass(req, res, next) {
+        const { id } = req.params;
+        const { password, newPassword } = req.body;
+        const user = await controller.changePass(id, password, newPassword);
+        if(user==1){
+            res.json({message: 'Mật khẩu hiện tại không đúng', status: false});
+        } else {
+            res.json({message: 'Đổi mật khẩu thành công', status: true});
+        }
     }
 
     // [POST] /api/users/:id/address/insert
@@ -249,6 +266,69 @@ class UserController {
             res.json(error)
         });
     }
+
+    async resetPassword(req, res, next){
+        try {
+            const {email} = req.body;
+            console.log('email: ', email);
+            const user = await userSchema.findOne({ email: email });
+            if (!user)
+                return res.json({message: 'Email không tồn tại', status: false});
+    
+            let token = await tokenSchema.findOne({ userId: user._id });
+            console.log('token: ', token);
+            if (!token) {
+                token = await new tokenSchema({
+                    userId: user._id,
+                    token: crypto.randomBytes(32).toString("hex"),
+                }).save();
+            }
+            const link = `http://localhost:3000/password/reset/${user.email}?token=${token.token}`;
+            await sendEmail(user.email, "Password reset", link);
+    
+            res.json({message: "Liên kết đặt lại mật khẩu được gửi đến tài khoản email của bạn", status: true});
+        } catch (error) {
+            res.json({message: "An error occured" + error});
+            console.log(error);
+        }
+    }
+
+    async showResetForm (req, res, next) {
+        if (!req.params.email || !req.query.token) {
+            console.log('redirect');
+            res.redirect('/password/reset')
+        } else {
+            console.log('render');
+            res.render('reset_password', { email: req.params.email, token: req.query.token})
+        }
+    }
+
+    async getToken(req, res, next){
+        try {
+            const user = await userSchema.findOne({email: req.params.email});
+            console.log(user);
+            if (!user) {
+                res.json({message: 'Liên kết không hợp lệ hoặc hết hạn - not email', status: false})
+            }
+            let token = req.query.token;
+            if (!token){
+                res.json({message: 'Liên kết không hợp lệ hoặc hết hạn - not token', status: false})
+            } 
+            const _token = await tokenSchema.findOne({token: token});
+            let pass = req.body.password;
+            user.password = await bcrypt.hash(pass, await bcrypt.genSalt(10));
+            await user.save();
+            await _token.delete();
+            res.json({message: 'Đổi mật khẩu thành công', status: true})
+        } catch (error) {
+            res.send("An error occured");
+            console.log(error);
+        }
+    }
+
+    
+
+    
     
     
 }

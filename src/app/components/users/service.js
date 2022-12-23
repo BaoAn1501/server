@@ -23,12 +23,15 @@ exports.getAll = async () => {
 
 exports.getById = async (id) => {
     const user = await userModel.findById(id);
-    console.log('user service: ', user);
     return user;
 }
 
 exports.update = async (id, full_name) => {
     return await userModel.findByIdAndUpdate(id, {full_name: full_name});
+}
+
+exports.updatePassword = async (id, newPassword) => {
+    return await userModel.findByIdAndUpdate(id, {password: newPassword});
 }
 
 exports.updateLink = async (token) => {

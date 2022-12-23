@@ -10,8 +10,8 @@ class ProductController {
   async index(req, res, next) {
     let products = await controller.getAll();
     products = products.map(async (item) => {
-      console.log("_id: ", item._id);
       const minItem = await findMin(item._id);
+      console.log('minItem: ', minItem);
       let reviews = await reviewController.getByProduct(item._id);
       reviews = reviews.filter(item => {
         return item.score>0;
@@ -297,10 +297,12 @@ class ProductController {
 
 const findMin = async (id) => {
   const products = await productSizeController.getAll(id);
+  console.log('all size: ', products)
   // console.log('all productSize: ', products);
   const list = products.filter((item) => {
     return Number(item.price) > 0;
   });
+  console.log('list more 0: ', list);
   // console.log('list > 0: ', list);
   // console.log('list has price > 0 length: ', list.length);
   let t;

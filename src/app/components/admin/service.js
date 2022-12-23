@@ -22,3 +22,7 @@ exports.getAll = async () => {
     const users = adminModel.find();
     return users;
 }
+
+exports.delete = async (id) => {
+    return await adminModel.findByIdAndDelete(id);
+}
