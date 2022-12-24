@@ -7,7 +7,7 @@ exports.getAll = async () => {
 }
 
 exports.getInDay = async (begin, end) => {
-    const o = await orderModel.find({updatedAt: {$gte: begin, $lt: end}, status: enumStatusOrder.processed }).sort({updatedAt: 1});
+    const o = await orderModel.find({updatedAt: {$gte: begin, $lt: end}, status: enumStatusOrder.taken }).sort({updatedAt: 1});
     return o;
 }
 

@@ -12,7 +12,7 @@ exports.getAll = async (id) => {
             rating: item.product_id.rating,
             size_symbol: item.size_id.symbol,
             size: item.size_id.value,
-            price: item.price
+            price: item.price,
         }
         return item;
     });

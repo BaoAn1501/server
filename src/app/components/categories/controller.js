@@ -28,7 +28,6 @@ exports.insert = async (body) => {
         return category.name.toLowerCase() == body.name.toLowerCase();
     })
     if (isExisted) {
-        console.log('existed');
         return null;
     }
     return await categoryService.insert(body);

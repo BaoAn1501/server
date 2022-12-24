@@ -303,20 +303,6 @@
   </div>
   <canvas class="my-4 w-100" id="myChart" height="380"></canvas>
   <h5>Sản phẩm bán chạy nhất trong ngày</h5>
-  <div class="row form-group">
-    <label for="date" class="col-sm-1 col-form-label">Ngày</label>
-    <div class="col-sm-4">
-      <div class="input-group date" id="datepicker">
-          <input type="text" class="form-control">
-          <span class="input-group-append">
-              <span class="input-group-text bg-white">
-                  <i class="fa fa-calendar"></i>
-              </span>
-          </span>
-      </div>
-    </div>
-  </div>
-  <button type="button" id="find-day" class="btn btn-primary">Tra cứu</button>
   <canvas id="chart-pie" class="chart-pie-1"></canvas>
   <h5 id="month">Sản phẩm tốt nhất tháng</h5>
   <canvas id="myReviewChart"></canvas>
@@ -450,100 +436,6 @@
 	<!-- Atlantis DEMO methods, don't include it in your project! -->
 	<script src="../assets/js/setting-demo.js"></script>
 	<script src="../assets/js/demo.js"></script>
-	<script>
-		Circles.create({
-			id:'circles-1',
-			radius:45,
-			value:60,
-			maxValue:100,
-			width:7,
-			text: 5,
-			colors:['#f1f1f1', '#FF9E27'],
-			duration:400,
-			wrpClass:'circles-wrp',
-			textClass:'circles-text',
-			styleWrapper:true,
-			styleText:true
-		})
-
-		Circles.create({
-			id:'circles-2',
-			radius:45,
-			value:70,
-			maxValue:100,
-			width:7,
-			text: 36,
-			colors:['#f1f1f1', '#2BB930'],
-			duration:400,
-			wrpClass:'circles-wrp',
-			textClass:'circles-text',
-			styleWrapper:true,
-			styleText:true
-		})
-
-		Circles.create({
-			id:'circles-3',
-			radius:45,
-			value:40,
-			maxValue:100,
-			width:7,
-			text: 12,
-			colors:['#f1f1f1', '#F25961'],
-			duration:400,
-			wrpClass:'circles-wrp',
-			textClass:'circles-text',
-			styleWrapper:true,
-			styleText:true
-		})
-
-		var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
-
-		var mytotalIncomeChart = new Chart(totalIncomeChart, {
-			type: 'bar',
-			data: {
-				labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
-				datasets : [{
-					label: "Total Income",
-					backgroundColor: '#ff9e27',
-					borderColor: 'rgb(23, 125, 255)',
-					data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
-				}],
-			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: false,
-				legend: {
-					display: false,
-				},
-				scales: {
-					yAxes: [{
-						ticks: {
-							display: false //this will remove only the label
-						},
-						gridLines : {
-							drawBorder: false,
-							display : false
-						}
-					}],
-					xAxes : [ {
-						gridLines : {
-							drawBorder: false,
-							display : false
-						}
-					}]
-				},
-			}
-		});
-
-		$('#lineChart').sparkline([105,103,123,100,95,105,115], {
-			type: 'line',
-			height: '70',
-			width: '100%',
-			lineWidth: '2',
-			lineColor: '#ffa534',
-			fillColor: 'rgba(255, 165, 52, .14)'
-		});
-	</script>
 </body>
 </html>
 
@@ -640,11 +532,12 @@
 
   RunGetDate();
 
-  async function RunGetProductInDay(date) {
-      var myProductListByDay = await getDataDay(date);
+  async function RunGetProductInDay() {
+      var myProductListByDay = await getDataDay();
       var nameList = [];
       var quantityList = [];
       if(myProductListByDay.length>0){
+		myProductListByDay = myProductListByDay.slice(0,10);
         nameList = myProductListByDay.map(item => {
           return item.product.name;
         })
@@ -674,22 +567,12 @@
       };
       var MyPie1 = new Chart(document.getElementsByClassName("chart-pie-1"), dataPie1);
     }
-
-  $(function() {
-      //$('#datepicker').datepicker("setDate", new Date()).(dateFormat: 'mm-dd-yyyy');
-      $("#datepicker").datepicker({ dateFormat: 'mm-dd-yyyy'}).datepicker("setDate", new Date());
-      var picked =  $("#datepicker").datepicker('getDate');
-      RunGetProductInDay(picked);
-  });
-
-  $('#find-day').click( ()=>{
-    var picked = $("#datepicker").datepicker('getDate');
-    RunGetProductInDay(picked);
-  });
+    RunGetProductInDay();
 
   async function RunGetReviews() {
     var ctx = document.getElementById("myReviewChart").getContext('2d');
     var data = await getReviewsData();
+	var data = data.slice(0, 10);
     var nameList = data.map(item => {
       return item.product_id.name;
     })
@@ -772,26 +655,3 @@
 
     
 </script>
-
-{{!-- var myLineChart = new Chart(document.getElementById("lineChart"), {
-      type: 'line',
-      data: {
-        labels: dateList,
-        datasets: [
-        {
-            label: "doanh thu",
-            data: totalList,
-            backgroundColor: [
-              'transparent',
-            ],
-            borderColor: [
-              selected,
-            ],
-            borderWidth: 2
-          },
-        ]
-      },
-      options: {
-        responsive: true
-      }
-    }); --}}

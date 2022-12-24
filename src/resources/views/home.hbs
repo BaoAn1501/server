@@ -296,20 +296,16 @@
 						<div class="col-md-6">
 							<div class="card full-height">
 								<div class="card-body">
-									<div class="card-title">Overall statistics</div>
-									<div class="card-category">Daily information about statistics in system</div>
+									<div class="card-title">Tổng quát</div>
+									<div class="card-category">Thống kê số người dùng và số lượt mua hàng</div>
 									<div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
 										<div class="px-2 pb-2 pb-md-0 text-center">
 											<div id="circles-1"></div>
-											<h6 class="fw-bold mt-3 mb-0">New Users</h6>
+											<h6 class="fw-bold mt-3 mb-0">Người dùng</h6>
 										</div>
 										<div class="px-2 pb-2 pb-md-0 text-center">
 											<div id="circles-2"></div>
-											<h6 class="fw-bold mt-3 mb-0">Sales</h6>
-										</div>
-										<div class="px-2 pb-2 pb-md-0 text-center">
-											<div id="circles-3"></div>
-											<h6 class="fw-bold mt-3 mb-0">Subscribers</h6>
+											<h6 class="fw-bold mt-3 mb-0">Bán ra</h6>
 										</div>
 									</div>
 								</div>
@@ -318,16 +314,12 @@
 						<div class="col-md-6">
 							<div class="card full-height">
 								<div class="card-body">
-									<div class="card-title">Total income & spend statistics</div>
+									<div class="card-title">Tổng doanh thu trong 7 ngày trở lại đây</div>
 									<div class="row py-3">
 										<div class="col-md-4 d-flex flex-column justify-content-around">
 											<div>
-												<h6 class="fw-bold text-uppercase text-success op-8">Total Income</h6>
-												<h3 class="fw-bold">$9.782</h3>
-											</div>
-											<div>
-												<h6 class="fw-bold text-uppercase text-danger op-8">Total Spend</h6>
-												<h3 class="fw-bold">$1,248</h3>
+												<h6 class="fw-bold text-success op-8">Tổng doanh thu</h6>
+												<h3 id="total-10" class="fw-bold"></h3>
 											</div>
 										</div>
 										<div class="col-md-8">
@@ -373,12 +365,12 @@
 						<div class="col-md-4">
 							<div class="card card-primary">
 								<div class="card-header">
-									<div class="card-title">Daily Sales</div>
-									<div class="card-category">March 25 - April 02</div>
+									<div class="card-title">Doanh thu trong ngày hôm nay</div>
+									<div class="card-category"><h3 id="date-today"></h3></div>
 								</div>
 								<div class="card-body pb-0">
 									<div class="mb-4 mt-2">
-										<h1>$4,578.58</h1>
+										<h1 id="total-today"></h1>
 									</div>
 									<div class="pull-in">
 										<canvas id="dailySalesChart"></canvas>
@@ -916,89 +908,167 @@
 	<script src="../assets/js/setting-demo.js"></script>
 	<script src="../assets/js/demo.js"></script>
 	<script>
-		Circles.create({
-			id:'circles-1',
-			radius:45,
-			value:60,
-			maxValue:100,
-			width:7,
-			text: 5,
-			colors:['#f1f1f1', '#FF9E27'],
-			duration:400,
-			wrpClass:'circles-wrp',
-			textClass:'circles-text',
-			styleWrapper:true,
-			styleText:true
-		})
+		var users;
+		var orders;
+		var total10 = $('#total-10');
+		total10.text('0 vnd');
+		var dateToday = $('#date-today');
+		var totalToday = $('#total-today');
+		dateToday.text('');
+		totalToday.text(0);
 
-		Circles.create({
-			id:'circles-2',
-			radius:45,
-			value:70,
-			maxValue:100,
-			width:7,
-			text: 36,
-			colors:['#f1f1f1', '#2BB930'],
-			duration:400,
-			wrpClass:'circles-wrp',
-			textClass:'circles-text',
-			styleWrapper:true,
-			styleText:true
-		})
+		function GetUsers() {
+			return fetch('http://localhost:3000/users/get-all')
+			.then(response => response.json())
+			.then(data => {
+				return data;
+			})
+		};
 
-		Circles.create({
-			id:'circles-3',
-			radius:45,
-			value:40,
-			maxValue:100,
-			width:7,
-			text: 12,
-			colors:['#f1f1f1', '#F25961'],
-			duration:400,
-			wrpClass:'circles-wrp',
-			textClass:'circles-text',
-			styleWrapper:true,
-			styleText:true
-		})
+		async function OnGetUsers(){
+			users = await GetUsers();
+			var usersNumber = 0;
+			usersNumber = users.length;
+			Circles.create({
+				id:'circles-1',
+				radius:45,
+				value:60,
+				maxValue:100,
+				width:7,
+				text: usersNumber,
+				colors:['#f1f1f1', '#FF9E27'],
+				duration:400,
+				wrpClass:'circles-wrp',
+				textClass:'circles-text',
+				styleWrapper:true,
+				styleText:true
+			})
+		}
+		OnGetUsers();
 
-		var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+		function GetOrders() {
+			return fetch('http://localhost:3000/orders/all/get')
+			.then(response => response.json())
+			.then(data => {
+				return data;
+			})
+		};
 
-		var mytotalIncomeChart = new Chart(totalIncomeChart, {
-			type: 'bar',
-			data: {
-				labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
-				datasets : [{
-					label: "Total Income",
-					backgroundColor: '#ff9e27',
-					borderColor: 'rgb(23, 125, 255)',
-					data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
-				}],
-			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: false,
-				legend: {
-					display: false,
-				},
-				scales: {
-					yAxes: [{
-						ticks: {
-							display: false //this will remove only the label
-						},
-						gridLines : {
-							drawBorder: false,
-							display : false
-						}
+		async function OnGetOrders(){
+			orders = await GetOrders();
+			var ordersNumber = 0;
+			ordersNumber = orders.length;
+			Circles.create({
+				id:'circles-2',
+				radius:45,
+				value:70,
+				maxValue:100,
+				width: 7,
+				text: ordersNumber,
+				colors:['#f1f1f1', '#2BB930'],
+				duration:400,
+				wrpClass:'circles-wrp',
+				textClass:'circles-text',
+				styleWrapper:true,
+				styleText:true
+			})
+		}
+		OnGetOrders();
+
+		function GetAnal10Days() {
+			return fetch('http://localhost:3000/orders/10days/get/')
+			.then(response => response.json())
+			.then(data => {
+				return data;
+			})
+		};
+
+		async function OnGetAnal10Days(){
+			var orders1 = await GetAnal10Days();
+			var totalMoney = orders1.reduce((acc, element)=>{
+				return acc + element.total;
+			}, 0);
+
+			total10.text(convertVND(totalMoney));
+			var days = orders1.map(item => {
+				return item.day;
+			})
+			var days = orders1.map(item => {
+				return item.day;
+			})
+			var totals = orders1.map(item => {
+				return item.total;
+			})
+
+			var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+			var mytotalIncomeChart = new Chart(totalIncomeChart, {
+				type: 'bar',
+				data: {
+					labels: days,
+					datasets : [{
+						label: "Doanh thu",
+						backgroundColor: '#ff9e27',
+						borderColor: 'rgb(23, 125, 255)',
+						data: totals,
 					}],
-					xAxes : [ {
-						gridLines : {
-							drawBorder: false,
-							display : false
-						}
-					}]
 				},
-			}
-		});
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					legend: {
+						display: false,
+					},
+					scales: {
+						yAxes: [{
+							ticks: {
+								display: false //this will remove only the label
+							},
+							gridLines : {
+								drawBorder: false,
+								display : false
+							}
+						}],
+						xAxes : [ {
+							gridLines : {
+								drawBorder: false,
+								display : false
+							}
+						}]
+					},
+				}
+			});
+
+		}
+
+		OnGetAnal10Days();
+
+		function GetIncomeToday() {
+			return fetch('http://localhost:3000/orders/today/get/')
+			.then(response => response.json())
+			.then(data => {
+				return data;
+			})
+		};
+
+		async function OnGetIncomeToday(){
+			let moneyToday = await GetIncomeToday();
+			let total = moneyToday.reduce((acc, element)=>{
+				return acc + element.total;
+			}, 0);
+			totalToday.text(convertVND(total));
+			dateToday.text(new Date(moneyToday[0].updatedAt).toDateString())
+
+		}
+
+		OnGetIncomeToday();
+		
+		function convertVND(text){
+			return text.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+		}
+
+		
+
+		
 
 		$('#lineChart').sparkline([105,103,123,100,95,105,115], {
 			type: 'line',

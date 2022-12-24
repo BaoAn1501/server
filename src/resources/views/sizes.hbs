@@ -601,7 +601,6 @@
         console.log(formDelete, 'form del');
         console.log(btnDelete, 'btn del');
         btnDelete.onclick = function(){
-          console.log('btn del clicked');
           formDelete.action = '/sizes/' + sizeId + '/delete?_method=DELETE';
           formDelete.submit();
         }

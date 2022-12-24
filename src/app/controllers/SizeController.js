@@ -2,6 +2,7 @@ const sizeController = require('../components/sizes/controller');
 
 class SizeController {
     // [GET] /
+    // hiển thị tất cả size
     async index(req, res, next) {
         let user;
         if(req.session.user){
@@ -39,7 +40,7 @@ class SizeController {
     async insert(req, res, next) {
         let {
             body
-        } = req;
+        } = req; 
         const symbol = body.symbol.toUpperCase();
         body = {
             ...body,

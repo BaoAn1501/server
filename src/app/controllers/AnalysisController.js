@@ -3,6 +3,7 @@ const orderController = require('../components/orders/controller');
 const productController = require('../components/products/controller');
 const orderItemsController = require('../components/order_item/controller');
 const reviewController = require('../components/reviews/controller');
+const { date } = require('joi');
 
 class AnalysisController {
     async index(req, res, next) {
@@ -22,20 +23,13 @@ class AnalysisController {
         begin = new Date(begin);
         end = new Date(end);
         const list = await GetRateList(begin, end);
-        console.log(list);
         res.json(list);
     }
 
     async sellDay(req, res, next) {
-        const {date} = req.params;
-        console.log('date initial: ', date);
-        let newDate = new Date(date);
-        newDate = newDate.setUTCHours(0,0,0,0);
-        newDate = newDate + (24 * 60 * 60 * 1000);
-        newDate = new Date(newDate);
-        console.log('date after: ', newDate);
-        let begin = newDate.setUTCHours(0,0,0,0);
-        let end = newDate.setUTCHours(23,59,59,999);
+        let today = new Date();
+        let begin = today.setUTCHours(0,0,0,0);
+        let end = today.setUTCHours(23,59,59,999);
         begin = new Date(begin);
         end = new Date(end);
         console.log('begin: ', begin, ' end: ', end);
@@ -71,7 +65,6 @@ class AnalysisController {
         const listOrder = await orderController.getDay(last, today)
         .then((result) => {
             if(result){
-                console.log('list order: ', result);
                 result = result.map(element => {
                     element = {
                         date: new Date(new Date(element.updatedAt).setUTCHours(0,0,0,0)),
@@ -93,7 +86,6 @@ class AnalysisController {
                 return acc;
             }, {});
             const list1 = Object.values(list);
-            console.log('list1: ', list1);
             res.json(list1);
         } )
         .catch(error => res.json(error));
@@ -109,34 +101,26 @@ class AnalysisController {
                 value: 0
             }
         })
-        console.log(listDay);
         let first = listDay[0].date;
         let end = listDay[listDay.length-1].date;
         end = end.setUTCHours(23,59,59,999);
         end = new Date(end);
-        console.log('begin: ', first ,' end: ', end);
         await orderController.getDay(first, end)
         .then((result) => {
             if(result){
-                console.log('list order: ', result);
                 result = result.map(element => {
                     element = {
                         date: new Date(new Date(element.updatedAt).setUTCHours(0,0,0,0)),
                         value: element.total
                     }
-                    console.log('ele: ', element);
                     return element;
                 });
                 return result;
             }
         })
         .then((result) => {
-            console.log('ldaf: ', listDay);
-            console.log('rsaf: ',result);
             let newList = listDay.concat(result);
-            console.log('list order after concat: ', newList);
             let list = newList.reduce((acc, element)=>{
-                console.log('slice ele: ', new Date(String(element.date).slice(0,10)));
                 if (element.date in acc) {
                     acc[element.date].value = element.value + acc[element.date].value
                 } else {
@@ -159,7 +143,6 @@ class AnalysisController {
                 }
         
               });
-            console.log('list1: ', list1);
             res.json(list1);
         } )
         .catch(error => res.json(error));
@@ -168,9 +151,7 @@ class AnalysisController {
 
 function getDaysInMonth(month, year) {
     var data = [];
-    console.log(month);
     let number = new Date(year, month, 0).getDate();
-    console.log(number);
     for(let i=1; i<=number; i++){
         data.push({
             date: new Date(year, month-1, i+1),
@@ -200,7 +181,6 @@ async function GetOrderList(begin, end) {
             
             const _result = Promise.all(result1).then((result) => {
                 result = result.flat(1);
-                console.log(result);
                 return result;
             })
             return _result;
@@ -214,7 +194,6 @@ async function GetRateList(begin, end){
     .then((result) => {
         if(result){
             result = result.map(async(item) => {
-                console.log('id product: ', item._id);
                 const product = await productController.getById(item.product_id);
                 item.product_id = product;
                 return item;
@@ -223,7 +202,6 @@ async function GetRateList(begin, end){
         }
     })
     .then(result => {
-        console.log('res1: ', result);
         const _result = Promise.all(result).then(result => {
             let count = {};
             let result1 = result.reduce(function (r, o) {

@@ -116,30 +116,33 @@ class OrderController {
             status: enumStatusOrder.pending,
             total: body.total,
         }
-        console.log('data checkout: ', data);
-        console.log('carts: ', body.carts);
-        await orderController.insert(data)
-        .then(async result => {
-            if(result){
-                console.log('order create: ', result);
-                const result1 = body.carts.map(async item => {
-                    const orderDetail = {
-                        productSize_id: item.productSize_id,
-                        order_id: result._id,
-                        quantity: item.quantity,
-                        price: item.productSize_id.price,
-                    }
-                    console.log('order item: ', orderDetail);
-                    await orderItemController.insert(orderDetail);
-                });
-                Promise.all(result1).then(async() => {
-                    await cartController.deleteAll(body.carts[0].user_id._id)
-                    .then(() => res.json({message: 'Thanh toán thành công'}))
-                    .catch(error => res.json(error));
-                  });
-            }
-        })
-        .catch();
+        if(data.total==0){
+            res.json({message: 'Không có sản phẩm nào được mua'});
+        } else {
+            await orderController.insert(data)
+            .then(async result => {
+                if(result){
+                    console.log('order create: ', result);
+                    const result1 = body.carts.map(async item => {
+                        const orderDetail = {
+                            productSize_id: item.productSize_id,
+                            order_id: result._id,
+                            quantity: item.quantity,
+                            price: item.productSize_id.price,
+                        }
+                        console.log('order item: ', orderDetail);
+                        await orderItemController.insert(orderDetail);
+                    });
+                    Promise.all(result1).then(async() => {
+                        await cartController.deleteAll(body.carts[0].user_id._id)
+                        .then(() => res.json({message: 'Thanh toán thành công'}))
+                        .catch(error => res.json(error));
+                      });
+                }
+            })
+            .catch();
+        }
+        
     }
 
     async cancel(req, res, next) {

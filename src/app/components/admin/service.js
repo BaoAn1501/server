@@ -26,3 +26,7 @@ exports.getAll = async () => {
 exports.delete = async (id) => {
     return await adminModel.findByIdAndDelete(id);
 }
+
+exports.changeOnline = async (id, active) => {
+    return await adminModel.findByIdAndUpdate(id, {active: active});
+}

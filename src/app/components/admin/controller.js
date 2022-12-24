@@ -51,5 +51,9 @@ exports.delete = async (id) => {
     return await adminService.delete(id);
 }
 
+exports.change = async (id, active) => {
+    return await adminService.changeOnline(id, active);
+}
+
 
 

@@ -2,6 +2,8 @@ const controller = require('../components/products/controller');
 const categoryController = require('../components/categories/controller');
 const sizeController = require('../components/sizes/controller');
 const productSizeController = require('../components/product_sizes/controller');
+const reviewsController = require('../components/reviews/controller');
+
 const fs = require('fs');
 const { enumStatusProduct } = require('../../util/constants');
 
@@ -12,8 +14,30 @@ class ProductController {
         if(req.session.user){
             user = req.session.user
         }
-        const products = await controller.getAllWithDeleted();
-        res.render('products', {products, user});
+        let products = await controller.getAllWithDeleted();
+        if(products.length>0){
+            products = products.map(async item =>{
+                let reviews = await reviewsController.getByProduct(item._id);
+                reviews = reviews.filter(item => {
+                    return item.score>0;
+                })
+                let total = reviews.reduce((acc, item) => {
+                    return acc + item.score;
+                }, 0);
+                let average = total / reviews.length;
+                if(average > 0){
+                    item.rating = Number(average).toFixed(1);
+                } else {
+                    item.rating = 0;
+                }
+                return item
+            });
+            Promise.all(products).then((products) => {
+                res.render('products', {products, user});
+            });
+        } else {
+            res.render('products', {products, user});
+        }
     }
 
     async create(req, res, next){

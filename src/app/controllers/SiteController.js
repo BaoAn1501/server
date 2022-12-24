@@ -1,6 +1,7 @@
 const userController = require('../components/users/controller');
 const adminController = require('../components/admin/controller');
 const jwt = require('jsonwebtoken');
+const { changeOnline } = require('../components/admin/service');
 
 class SiteController {
     // [GET] /
@@ -66,6 +67,7 @@ class SiteController {
             }, 'myKey');
             req.session.token = token;
             req.session.user = result;
+            await changeOnline(result._id, true);
             res.json({
                 status: true,
                 message: "Đăng nhập thành công",
@@ -145,7 +147,9 @@ class SiteController {
         res.render('login');
     }
 
-    logOut(req, res, next){
+    async logOut(req, res, next){
+        // const {id} = req.body.id;
+        // await changeOnline(id, false);
         req.session.destroy(function(error){
             res.redirect('/login/admin');
         });

@@ -28,8 +28,8 @@ exports.getById = async (id) => {
 }
 
 exports.insert = async (body) => {
-    const data = await sizeService.getAll();
-    const isExisted = data.some((size) => {
+    const sizes = await sizeService.getAll();
+    const isExisted = sizes.some((size) => {
         return size.symbol.toLowerCase() == body.symbol.toLowerCase() || size.value.toLowerCase() == body.value.toLowerCase();
     });
     console.log(isExisted);

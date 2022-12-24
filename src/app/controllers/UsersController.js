@@ -48,6 +48,12 @@ class UsersController {
             res.redirect('/users');
         });
     }
+
+    async getAllUsers(req, res, next) {
+        await userController.getAll().then((users) => {
+            res.json(users);
+        }).catch(error => res.json(error));
+    }
 }
 
 module.exports = new UsersController();
