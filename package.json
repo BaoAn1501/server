@@ -40,6 +40,8 @@
     "method-override": "^3.0.0",
     "mongodb": "^4.10.0",
     "mongoose": "^6.6.5",
+    "mongoose-delete": "^0.5.4",
+    "mongoose-slug-generator": "^1.0.4",
     "morgan": "^1.10.0",
     "multer": "^1.4.4",
     "multer-gridfs-storage": "^5.0.2",
@@ -60,8 +62,6 @@
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "moment": "^2.29.4",
-    "mongoose-delete": "^0.5.4",
-    "mongoose-slug-generator": "^1.0.4",
     "node-sass": "^7.0.3",
     "prettier": "^2.7.1"
   }
