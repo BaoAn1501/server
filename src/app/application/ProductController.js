@@ -274,7 +274,7 @@ class ProductController {
   async search(req, res, text) {
     const {id} = req.params;
     // const {name} = req.body;
-    let products = await controller.search(req.query.text);
+    let products = await controller.search(req.query.text.toLowerCase());
     products = products.map(async (item) => {
       console.log("_id: ", item._id);
       const minItem = await findMin(item._id);
