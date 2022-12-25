@@ -27,7 +27,7 @@ app.engine('hbs', engine({
     manager: (e) => (e != true) ? 'display: none' : '',
     online: (status) => {
       if(status==true){
-        return `<div class="d-flex flex-row align-items-center"><i class="fas fa-circle" style="color: green; margin-right: 3px"></i><b>Offline</b></div>`;
+        return `<div class="d-flex flex-row align-items-center"><i class="fas fa-circle" style="color: green; margin-right: 3px"></i><b>Online</b></div>`;
       } else {
         return `<div class="d-flex flex-row align-items-center"><i class="fas fa-circle" style="color: red; margin-right: 3px"></i><b>Offline</b></div>`;
       }
@@ -37,7 +37,8 @@ app.engine('hbs', engine({
     restoreProductButton: (code) => (code==3) ? '' : 'display: none',
     sellOutProductButton: (code) => (code==3 || code==2) ? 'display: none' : '',
     sellingProductButton: (code) => (code==2) ? '' : 'display: none',
-    buttons: (code) => (code==1) ? '' : 'display: none',
+    buttonOrder1: (code) => (code==1) ? '' : 'display: none',
+    buttonOrder3: (code) => (code==1 || code==2) ? '' : 'display: none',
     orderButton: (code) => (code==1) ? 'Xử lý' : 'Xem',
     convert: (date) => String(date).slice(0, 24),
     colors: (number) => {

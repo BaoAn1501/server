@@ -67,6 +67,7 @@ class SiteController {
             }, 'myKey');
             req.session.token = token;
             req.session.user = result;
+            console.log('result: ', result);
             await changeOnline(result._id, true);
             res.json({
                 status: true,
@@ -149,7 +150,8 @@ class SiteController {
 
     async logOut(req, res, next){
         // const {id} = req.body.id;
-        // await changeOnline(id, false);
+        const user = req.session.user;
+        await changeOnline(user._id, false);
         req.session.destroy(function(error){
             res.redirect('/login/admin');
         });

@@ -421,11 +421,7 @@
                             <td>{{role this.admin}}</td>
                             <td>{{{online this.active}}}</td>
                             <td>
-                              <a id="del-text" href="" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-user-modal" style="color: red;">Xoá</a>
-                            </td>
-                            <td>
-                              <a>{{user.email}}</a>
-                              {{!-- <a href="" style="{{opm user.email}}" class="btn btn-link dropdown-item" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-size-modal">Xoá</a> --}}
+                              <a id="del-text" class="delete-text" href="" data-toggle="modal" data-id="{{this._id}}" data-target="#delete-user-modal" style="color: red;">Xoá</a>
                             </td>
                             </tr>
                             {{else}}
@@ -776,7 +772,8 @@
 <form name="delete-user-form" method="POST"></form>
 
 <script>
-  var delText = $('#del-text');
+  var delText = $('del-text');
+  var allDelText = $('.delete-text');
   function getCurrentUser(){
     $.ajax({
         url: "http://localhost:3000/users/current/get",
@@ -785,9 +782,9 @@
         success: function(res) {
           console.log(res);
             if(res.email != 'admin@gmail.com'){
-              delText.hide();
+              allDelText.hide();
             } else {
-              delText.show();
+              allDelText.show();
             }
         }
     });
