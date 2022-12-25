@@ -38,6 +38,7 @@
     "jsonwebtoken": "^8.5.1",
     "mailgun-js": "^0.22.0",
     "method-override": "^3.0.0",
+    "moment": "^2.29.4",
     "mongodb": "^4.10.0",
     "mongoose": "^6.6.5",
     "mongoose-delete": "^0.5.4",
@@ -61,7 +62,6 @@
   "devDependencies": {
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
-    "moment": "^2.29.4",
     "node-sass": "^7.0.3",
     "prettier": "^2.7.1"
   }
