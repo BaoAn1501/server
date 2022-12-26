@@ -14,11 +14,12 @@ class OrderController {
     // [GET] /api/products
     async index(req, res, next) {
         const {id} = req.params;
-        let orders = await orderController.getAll();
-        orders = orders.filter(item => {
-            return item.userAddress_id.user_id == id;
+        let orders = await orderController.getAll().then(result => {
+            result = result.filter(item => {
+                return item.userAddress_id.user_id == id;
+            })
+            res.json(result);
         });
-        res.json(orders);
     }
 
     async cancelList (req, res, next) {
@@ -36,15 +37,13 @@ class OrderController {
 
     async shippingList (req, res, next) {
         const {id} = req.params;
-        let orders = await orderController.getAll();
-        if(orders.length>0){
-            orders = orders.filter(item => {
+        await orderController.getAll().then(result =>{
+            let list = result.filter(item => {
                 return item.userAddress_id.user_id == id && item.status.name == enumStatusOrder.shipping.name;
             });
-            res.json(orders);
-        } else {
-            res.json(null);
-        }
+            res.json(list);
+        }).catch(error => res.json(error));
+        
     }
 
     async takenList (req, res, next) {
@@ -65,7 +64,7 @@ class OrderController {
         let orders = await orderController.getAll();
         if(orders.length>0){
             orders = orders.filter(item => {
-                return item.userAddress_id.user_id == id && String(item.status.name) == String(enumStatusOrder.pending.name);
+                return String(item.userAddress_id.user_id) == String(id) && String(item.status.name) == String(enumStatusOrder.pending.name);
             });
             res.json(orders);
         } else {

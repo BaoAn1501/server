@@ -216,11 +216,10 @@ class UserController {
         const {id} = req.params;
         const allAddress = await addressController.getAll(id);
         if(allAddress.length>0){
-            const _default = await addressController.getDefault(id);
             const firstAddress = allAddress[0];
             res.json(firstAddress);
         } else {
-            res.json(null);
+            res.json({});
         }
         
     }

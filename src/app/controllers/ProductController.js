@@ -3,6 +3,8 @@ const categoryController = require('../components/categories/controller');
 const sizeController = require('../components/sizes/controller');
 const productSizeController = require('../components/product_sizes/controller');
 const reviewsController = require('../components/reviews/controller');
+const addressController = require('../components/user_address/controller');
+const orderController = require('../components/orders/controller');
 
 const fs = require('fs');
 const { enumStatusProduct } = require('../../util/constants');

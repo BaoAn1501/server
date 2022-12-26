@@ -15,15 +15,24 @@ class AnalysisController {
     }
 
     async ratingMonth (req, res, next) {
+        const {m} = req.params;
         const date = new Date();
-        let begin = new Date(date.getFullYear(), date.getMonth(), 2);
-        let end = new Date(date.getFullYear(), date.getMonth()+1, 1);
+        let begin = new Date(date.getFullYear(), m-1, 2);
+        let end = new Date(date.getFullYear(), m, 1);
         begin = begin.setUTCHours(0,0,0,0);
         end = end.setUTCHours(23,59,59,999);
         begin = new Date(begin);
         end = new Date(end);
         const list = await GetRateList(begin, end);
         res.json(list);
+    }
+
+    async rating_months(req, res, next){
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
+        res.render('analysis_ram', {user});
     }
 
     async sellDay(req, res, next) {
@@ -34,7 +43,28 @@ class AnalysisController {
         end = new Date(end);
         console.log('begin: ', begin, ' end: ', end);
         let list = await GetOrderList(begin, end);
-        console.log(list);
+        list = list.reduce((acc, element)=>{
+            if (element.product.name in acc) {
+                acc[element.product.name].quantity = element.quantity + acc[element.product.name].quantity
+            } else {
+                acc[element.product.name] = element;
+            }
+            return acc;
+        }, {});
+        let list1 = Object.values(list);
+        res.json(list1);
+    }
+
+    async sellMonth (req, res, next) {
+        const {m} = req.params;
+        const date = new Date();
+        let begin = new Date(date.getFullYear(), m-1, 2);
+        let end = new Date(date.getFullYear(), m, 1);
+        begin = begin.setUTCHours(0,0,0,0);
+        end = end.setUTCHours(23,59,59,999);
+        begin = new Date(begin);
+        end = new Date(end);
+        let list = await GetOrderList(begin, end);
         list = list.reduce((acc, element)=>{
             if (element.product.name in acc) {
                 acc[element.product.name].quantity = element.quantity + acc[element.product.name].quantity
@@ -146,6 +176,14 @@ class AnalysisController {
             res.json(list1);
         } )
         .catch(error => res.json(error));
+    }
+
+    async revenue_months(req, res, next){
+        let user;
+        if(req.session.user){
+            user = req.session.user
+        }
+        res.render('analysis_rm', {user});
     }
 }
 

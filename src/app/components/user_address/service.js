@@ -12,11 +12,6 @@ exports.getById = async (id) => {
     return address;
 }
 
-exports.getDefault = async (id) => {
-    const address = await addressModel.findOne({user_id: id, default: true}).populate('user_id');
-    return address;
-}
-
 exports.insert = async (data) => {
     const p = new addressModel(data);
     return await p.save();
@@ -25,6 +20,11 @@ exports.insert = async (data) => {
 exports.update = async (id, data) => {
     console.log('update address service: ');
     return await addressModel.findByIdAndUpdate(id, data, {new: true});
+}
+
+exports.updateUserID = async (id, userID) => {
+    console.log('update address service: ');
+    return await addressModel.findByIdAndUpdate(id, {user_id: userID}, {new: true});
 }
 
 exports.delete = async (id) => {
