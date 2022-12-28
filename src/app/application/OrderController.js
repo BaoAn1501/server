@@ -116,7 +116,7 @@ class OrderController {
             total: body.total,
         }
         if(data.total==0){
-            res.json({message: 'Không có sản phẩm nào được mua'});
+            res.json({message: 'Không có sản phẩm nào được mua',status: false});
         } else {
             await orderController.insert(data)
             .then(async result => {
@@ -134,7 +134,7 @@ class OrderController {
                     });
                     Promise.all(result1).then(async() => {
                         await cartController.deleteAll(body.carts[0].user_id._id)
-                        .then(() => res.json({message: 'Thanh toán thành công'}))
+                        .then(() => res.json({message: 'Thanh toán thành công', status: true}))
                         .catch(error => res.json(error));
                       });
                 }
